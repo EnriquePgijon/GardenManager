@@ -38,16 +38,26 @@ public class JwtFiltro extends OncePerRequestFilter {
         // Comprueba que el header empieza por "Bearer "
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
-            username = jwtUtil.obtenerUsername(token);
+            try {
+                username = jwtUtil.obtenerUsername(token);
+            } catch (Exception e) {
+                // Si el token es inválido o ha expirado, simplemente lo ignoramos
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
 
         // Si el token es válido, autentica al usuario
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validarToken(token)) {
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (jwtUtil.validarToken(token)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            } catch (Exception e) {
+                // Si hay cualquier error, continuamos sin autenticar
             }
         }
 
