@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
 import { ClienteService } from '../../services/cliente';
@@ -10,7 +10,7 @@ import { TrabajadorService } from '../../services/trabajador';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
@@ -27,22 +27,26 @@ export class DashboardComponent implements OnInit {
     private clienteService: ClienteService,
     private servicioService: ServicioService,
     private trabajadorService: TrabajadorService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   // Al cargar el componente, obtiene los datos del backend
   ngOnInit() {
     this.clienteService.obtenerTodos().subscribe(clientes => {
       this.totalClientes = clientes.length;
+      this.cdr.detectChanges();
     });
 
     this.trabajadorService.obtenerTodos().subscribe(trabajadores => {
       this.totalTrabajadores = trabajadores.length;
+      this.cdr.detectChanges();
     });
 
     this.servicioService.obtenerTodos().subscribe(servicios => {
       this.totalServicios = servicios.length;
       this.serviciosPendientes = servicios.filter(s => s.estado === 'PENDIENTE').length;
+      this.cdr.detectChanges();
     });
   }
 
