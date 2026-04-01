@@ -1,0 +1,122 @@
+<!-- Pantalla de gestión de servicios -->
+<div class="min-h-screen bg-gray-100">
+
+  <!-- Barra de navegación -->
+  <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow">
+    <h1 class="text-xl font-bold"> GardenManager</h1>
+    <div class="flex gap-4">
+      <a routerLink="/dashboard" class="hover:underline cursor-pointer">Dashboard</a>
+      <a routerLink="/clientes" class="hover:underline cursor-pointer">Clientes</a>
+      <a routerLink="/trabajadores" class="hover:underline cursor-pointer">Trabajadores</a>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="p-8">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-700">Gestión de servicios</h2>
+      <button (click)="nuevoServicio()"
+        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+        + Nuevo servicio
+      </button>
+    </div>
+
+    <!-- Formulario para crear o editar servicio -->
+    <div *ngIf="mostrarFormulario" class="bg-white rounded-2xl shadow p-6 mb-6">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">
+        {{ editando ? 'Editar servicio' : 'Nuevo servicio' }}
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de servicio</label>
+          <select [(ngModel)]="servicioSeleccionado.tipo"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="">Selecciona un tipo</option>
+            <option *ngFor="let tipo of tiposServicio" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+          <select [(ngModel)]="servicioSeleccionado.cliente"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="">Selecciona un cliente</option>
+            <option *ngFor="let cliente of clientes" [ngValue]="cliente">
+              {{ cliente.nombre }} {{ cliente.apellidos }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+          <input type="date" [(ngModel)]="servicioSeleccionado.fecha"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+          <select [(ngModel)]="servicioSeleccionado.estado"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+          <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="3"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button (click)="guardarServicio()"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+          Guardar
+        </button>
+        <button (click)="cancelar()"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-semibold transition">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla de servicios -->
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-green-50 text-green-700 text-sm font-semibold">
+          <tr>
+            <th class="px-6 py-4">Tipo</th>
+            <th class="px-6 py-4">Cliente</th>
+            <th class="px-6 py-4">Fecha</th>
+            <th class="px-6 py-4">Estado</th>
+            <th class="px-6 py-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let servicio of servicios" class="border-t hover:bg-gray-50 transition">
+            <td class="px-6 py-4">{{ servicio.tipo }}</td>
+            <td class="px-6 py-4">{{ nombreCliente(servicio) }}</td>
+            <td class="px-6 py-4">{{ servicio.fecha }}</td>
+            <td class="px-6 py-4">
+              <span [ngClass]="{
+                'bg-yellow-100 text-yellow-700': servicio.estado === 'PENDIENTE',
+                'bg-blue-100 text-blue-700': servicio.estado === 'EN_PROCESO',
+                'bg-green-100 text-green-700': servicio.estado === 'FINALIZADO'
+              }" class="px-3 py-1 rounded-full text-sm font-medium">
+                {{ servicio.estado }}
+              </span>
+            </td>
+            <td class="px-6 py-4 flex gap-2">
+              <button (click)="editarServicio(servicio)"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition">
+                Editar
+              </button>
+              <button (click)="eliminarServicio(servicio.id!)"
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="servicios.length === 0">
+            <td colspan="5" class="px-6 py-8 text-center text-gray-400">No hay servicios registrados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
