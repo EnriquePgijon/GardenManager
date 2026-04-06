@@ -1,0 +1,97 @@
+<!-- Pantalla de gestión de trabajadores -->
+<div class="min-h-screen bg-gray-100">
+
+  <!-- Barra de navegación -->
+  <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow">
+    <h1 class="text-xl font-bold"> GardenManager</h1>
+    <div class="flex gap-4">
+      <a routerLink="/dashboard" class="hover:underline cursor-pointer">Dashboard</a>
+      <a routerLink="/clientes" class="hover:underline cursor-pointer">Clientes</a>
+      <a routerLink="/servicios" class="hover:underline cursor-pointer">Servicios</a>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="p-8">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-700">Gestión de trabajadores</h2>
+      <button (click)="nuevoTrabajador()"
+        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+        + Nuevo trabajador
+      </button>
+    </div>
+
+    <!-- Formulario para crear o editar trabajador -->
+    <div *ngIf="mostrarFormulario" class="bg-white rounded-2xl shadow p-6 mb-6">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">
+        {{ editando ? 'Editar trabajador' : 'Nuevo trabajador' }}
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+          <input type="text" [(ngModel)]="trabajadorSeleccionado.nombre"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
+          <input type="text" [(ngModel)]="trabajadorSeleccionado.apellidos"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+          <input type="text" [(ngModel)]="trabajadorSeleccionado.telefono"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" [(ngModel)]="trabajadorSeleccionado.email"
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button (click)="guardarTrabajador()"
+          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
+          Guardar
+        </button>
+        <button (click)="cancelar()"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-semibold transition">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabla de trabajadores -->
+    <div class="bg-white rounded-2xl shadow overflow-hidden">
+      <table class="w-full text-left">
+        <thead class="bg-green-50 text-green-700 text-sm font-semibold">
+          <tr>
+            <th class="px-6 py-4">Nombre</th>
+            <th class="px-6 py-4">Teléfono</th>
+            <th class="px-6 py-4">Email</th>
+            <th class="px-6 py-4">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trabajador of trabajadores" class="border-t hover:bg-gray-50 transition">
+            <td class="px-6 py-4">{{ trabajador.nombre }} {{ trabajador.apellidos }}</td>
+            <td class="px-6 py-4">{{ trabajador.telefono }}</td>
+            <td class="px-6 py-4">{{ trabajador.email }}</td>
+            <td class="px-6 py-4 flex gap-2">
+              <button (click)="editarTrabajador(trabajador)"
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition">
+                Editar
+              </button>
+              <button (click)="eliminarTrabajador(trabajador.id!)"
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="trabajadores.length === 0">
+            <td colspan="4" class="px-6 py-8 text-center text-gray-400">No hay trabajadores registrados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
