@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TrabajadorService } from '../../services/trabajador';
 import { Trabajador } from '../../models/trabajador.model';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 // Componente que gestiona la pantalla de trabajadores
 @Component({
@@ -27,9 +29,11 @@ export class TrabajadoresComponent implements OnInit {
   // Indica si estamos editando o creando
   editando = false;
 
-  constructor(
+ constructor(
     private trabajadorService: TrabajadorService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   // Al cargar el componente, obtiene todos los trabajadores
@@ -91,5 +95,11 @@ export class TrabajadoresComponent implements OnInit {
   // Cierra el formulario sin guardar
   cancelar() {
     this.mostrarFormulario = false;
+  }
+
+  // Cierra la sesión y redirige al login
+  cerrarSesion() {
+    this.authService.cerrarSesion();
+    this.router.navigate(['/login']);
   }
 }
