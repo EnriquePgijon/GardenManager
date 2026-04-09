@@ -6,6 +6,8 @@ import { ServicioService } from '../../services/servicio';
 import { ClienteService } from '../../services/cliente';
 import { Servicio } from '../../models/servicio.model';
 import { Cliente } from '../../models/cliente.model';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 // Componente que gestiona la pantalla de servicios
 @Component({
@@ -41,7 +43,9 @@ export class ServiciosComponent implements OnInit {
   constructor(
     private servicioService: ServicioService,
     private clienteService: ClienteService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   // Al cargar el componente, obtiene todos los servicios y clientes
@@ -123,5 +127,11 @@ export class ServiciosComponent implements OnInit {
   // Cierra el formulario sin guardar
   cancelar() {
     this.mostrarFormulario = false;
+  }
+
+  // Cierra la sesión y redirige al login
+  cerrarSesion() {
+    this.authService.cerrarSesion();
+    this.router.navigate(['/login']);
   }
 }
