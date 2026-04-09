@@ -1,13 +1,16 @@
 <!-- Pantalla de gestión de servicios -->
 <div class="min-h-screen bg-gray-100">
 
-  <!-- Barra de navegación -->
+ <!-- Barra de navegación -->
   <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow">
-    <h1 class="text-xl font-bold"> GardenManager</h1>
+    <h1 class="text-xl font-bold">🌿 GardenManager</h1>
     <div class="flex gap-4">
       <a routerLink="/dashboard" class="hover:underline cursor-pointer">Dashboard</a>
       <a routerLink="/clientes" class="hover:underline cursor-pointer">Clientes</a>
       <a routerLink="/trabajadores" class="hover:underline cursor-pointer">Trabajadores</a>
+      <button (click)="cerrarSesion()" class="bg-white text-green-700 px-3 py-1 rounded font-semibold hover:bg-gray-100">
+        Cerrar sesión
+      </button>
     </div>
   </nav>
 
