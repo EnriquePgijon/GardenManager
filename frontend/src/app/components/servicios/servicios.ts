@@ -95,8 +95,15 @@ export class ServiciosComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  // Guarda el servicio (crea o actualiza según el caso)
+// Guarda el servicio (crea o actualiza según el caso)
   guardarServicio() {
+    // Validación de campos obligatorios
+    if (!this.servicioSeleccionado.tipo || !this.servicioSeleccionado.fecha || 
+        !this.servicioSeleccionado.cliente.id) {
+      alert('Por favor, rellena todos los campos obligatorios.');
+      return;
+    }
+
     if (this.editando && this.servicioSeleccionado.id) {
       this.servicioService.actualizar(this.servicioSeleccionado.id, this.servicioSeleccionado).subscribe(() => {
         this.cargarServicios();
