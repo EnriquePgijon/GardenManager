@@ -69,8 +69,15 @@ constructor(
     this.mostrarFormulario = true;
   }
 
-  // Guarda el cliente (crea o actualiza según el caso)
+ // Guarda el cliente (crea o actualiza según el caso)
   guardarCliente() {
+    // Validación de campos obligatorios
+    if (!this.clienteSeleccionado.nombre || !this.clienteSeleccionado.apellidos || 
+        !this.clienteSeleccionado.telefono || !this.clienteSeleccionado.email) {
+      alert('Por favor, rellena todos los campos obligatorios.');
+      return;
+    }
+
     if (this.editando && this.clienteSeleccionado.id) {
       this.clienteService.actualizar(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(() => {
         this.cargarClientes();
