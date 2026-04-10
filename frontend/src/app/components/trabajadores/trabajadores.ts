@@ -68,8 +68,15 @@ export class TrabajadoresComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  // Guarda el trabajador (crea o actualiza según el caso)
+// Guarda el trabajador (crea o actualiza según el caso)
   guardarTrabajador() {
+    // Validación de campos obligatorios
+    if (!this.trabajadorSeleccionado.nombre || !this.trabajadorSeleccionado.apellidos || 
+        !this.trabajadorSeleccionado.telefono || !this.trabajadorSeleccionado.email) {
+      alert('Por favor, rellena todos los campos obligatorios.');
+      return;
+    }
+
     if (this.editando && this.trabajadorSeleccionado.id) {
       this.trabajadorService.actualizar(this.trabajadorSeleccionado.id, this.trabajadorSeleccionado).subscribe(() => {
         this.cargarTrabajadores();
