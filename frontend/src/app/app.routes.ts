@@ -4,6 +4,7 @@ import { DashboardComponent } from './components/dashboard/dashboard';
 import { ClientesComponent } from './components/clientes/clientes';
 import { ServiciosComponent } from './components/servicios/servicios';
 import { TrabajadoresComponent } from './components/trabajadores/trabajadores';
+import { NotFoundComponent } from './components/not-found/not-found';
 import { AuthGuard } from './guards/auth-guard';
 
 // Definición de las rutas de la aplicación
@@ -25,4 +26,7 @@ export const routes: Routes = [
 
   // Gestión de trabajadores (protegido)
   { path: 'trabajadores', component: TrabajadoresComponent, canActivate: [AuthGuard] },
+
+  // Página 404 para rutas no encontradas
+  { path: '**', component: NotFoundComponent },
 ];
