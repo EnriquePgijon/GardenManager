@@ -1,107 +1,136 @@
 <!-- Pantalla de gestión de clientes -->
-<div class="min-h-screen bg-gray-100">
+<div class="min-h-screen flex flex-col" style="background:#F5F0E8;">
 
- <!-- Barra de navegación -->
-  <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow">
-    <h1 class="text-xl font-bold"> GardenManager</h1>
-    <div class="flex gap-4">
-      <a routerLink="/dashboard" class="hover:underline cursor-pointer">Dashboard</a>
-      <a routerLink="/servicios" class="hover:underline cursor-pointer">Servicios</a>
-      <a routerLink="/trabajadores" class="hover:underline cursor-pointer">Trabajadores</a>
-      <button (click)="cerrarSesion()" class="bg-white text-green-700 px-3 py-1 rounded font-semibold hover:bg-gray-100">
+  <!-- Navbar -->
+  <nav style="background:#1C3A2A; height:58px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:9px; height:9px; background:#C8A96E; border-radius:50%;"></div>
+      <span style="color:#F5F0E8; font-size:14px; letter-spacing:3px; text-transform:uppercase;">GardenManager</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:4px;">
+      <a routerLink="/dashboard" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Dashboard</a>
+      <a routerLink="/clientes" style="color:#C8A96E; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none; background:#2D5A3D;">Clientes</a>
+      <a routerLink="/servicios" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Servicios</a>
+      <a routerLink="/trabajadores" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Trabajadores</a>
+      <button (click)="cerrarSesion()" style="border:1px solid #C8A96E; color:#C8A96E; font-size:11px; padding:6px 14px; border-radius:4px; cursor:pointer; background:transparent; margin-left:8px; letter-spacing:1px;">
         Cerrar sesión
       </button>
     </div>
   </nav>
 
-  <!-- Contenido principal -->
-  <div class="p-8">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-700">Gestión de clientes</h2>
-      <button (click)="nuevoCliente()"
-        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
-        + Nuevo cliente
-      </button>
+  <!-- Cuerpo -->
+  <div style="display:flex; flex:1;">
+
+    <!-- Sidebar -->
+    <div style="width:220px; background:#1C3A2A; padding:28px 0; display:flex; flex-direction:column; gap:2px;">
+      <div style="font-size:9px; color:#4A8C5C; letter-spacing:2px; text-transform:uppercase; padding:16px 24px 8px;">General</div>
+      <a routerLink="/dashboard" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#8aab8a; font-size:13px; text-decoration:none;">
+        <span>▪</span> Dashboard
+      </a>
+      <a routerLink="/clientes" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#F5F0E8; font-size:13px; text-decoration:none; background:#2D5A3D; border-left:2px solid #C8A96E;">
+        <span>▪</span> Clientes
+      </a>
+      <a routerLink="/servicios" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#8aab8a; font-size:13px; text-decoration:none;">
+        <span>▪</span> Servicios
+      </a>
+      <a routerLink="/trabajadores" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#8aab8a; font-size:13px; text-decoration:none;">
+        <span>▪</span> Trabajadores
+      </a>
     </div>
 
-    <!-- Formulario para crear o editar cliente -->
-    <div *ngIf="mostrarFormulario" class="bg-white rounded-2xl shadow p-6 mb-6">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4">
-        {{ editando ? 'Editar cliente' : 'Nuevo cliente' }}
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-          <input type="text" [(ngModel)]="clienteSeleccionado.nombre"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Apellidos</label>
-          <input type="text" [(ngModel)]="clienteSeleccionado.apellidos"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
-          <input type="text" [(ngModel)]="clienteSeleccionado.telefono"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input type="email" [(ngModel)]="clienteSeleccionado.email"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
-        </div>
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
-          <input type="text" [(ngModel)]="clienteSeleccionado.direccion"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
-        </div>
-      </div>
-      <div class="flex gap-3 mt-4">
-        <button (click)="guardarCliente()"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
-          Guardar
-        </button>
-        <button (click)="cancelar()"
-          class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-semibold transition">
-          Cancelar
-        </button>
-      </div>
-    </div>
+    <!-- Contenido principal -->
+    <div style="flex:1; padding:28px 32px;">
 
-    <!-- Tabla de clientes -->
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-green-50 text-green-700 text-sm font-semibold">
-          <tr>
-            <th class="px-6 py-4">Nombre</th>
-            <th class="px-6 py-4">Teléfono</th>
-            <th class="px-6 py-4">Email</th>
-            <th class="px-6 py-4">Dirección</th>
-            <th class="px-6 py-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let cliente of clientes" class="border-t hover:bg-gray-50 transition">
-            <td class="px-6 py-4">{{ cliente.nombre }} {{ cliente.apellidos }}</td>
-            <td class="px-6 py-4">{{ cliente.telefono }}</td>
-            <td class="px-6 py-4">{{ cliente.email }}</td>
-            <td class="px-6 py-4">{{ cliente.direccion }}</td>
-            <td class="px-6 py-4 flex gap-2">
-              <button (click)="editarCliente(cliente)"
-                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition">
-                Editar
-              </button>
-              <button (click)="eliminarCliente(cliente.id!)"
-                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="clientes.length === 0">
-            <td colspan="5" class="px-6 py-8 text-center text-gray-400">No hay clientes registrados</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Cabecera -->
+      <div style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Gestión</div>
+          <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Clientes</div>
+        </div>
+        <button (click)="nuevoCliente()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 20px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+          + Nuevo cliente
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <div *ngIf="mostrarFormulario" style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; padding:24px; margin-bottom:24px;">
+        <div style="width:30px; height:2px; background:#C8A96E; margin-bottom:16px;"></div>
+        <div style="font-size:14px; color:#1C3A2A; font-weight:500; margin-bottom:20px;">
+          {{ editando ? 'Editar cliente' : 'Nuevo cliente' }}
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Nombre</label>
+            <input type="text" [(ngModel)]="clienteSeleccionado.nombre"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Apellidos</label>
+            <input type="text" [(ngModel)]="clienteSeleccionado.apellidos"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Teléfono</label>
+            <input type="text" [(ngModel)]="clienteSeleccionado.telefono"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Email</label>
+            <input type="email" [(ngModel)]="clienteSeleccionado.email"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Dirección</label>
+            <input type="text" [(ngModel)]="clienteSeleccionado.direccion"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:24px;">
+          <button (click)="guardarCliente()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 24px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+            Guardar
+          </button>
+          <button (click)="cancelar()" style="background:transparent; color:#8a7a5a; border:0.5px solid #e0d8c8; padding:10px 24px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+        <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+          <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de clientes</span>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+          <thead>
+            <tr style="background:#faf7f2;">
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Nombre</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Teléfono</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Email</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Dirección</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cliente of clientes" style="border-top:0.5px solid #f0ebe0;">
+              <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ cliente.nombre }} {{ cliente.apellidos }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.telefono }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.email }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.direccion }}</td>
+              <td style="padding:12px 18px;">
+                <button (click)="editarCliente(cliente)" style="background:#EAF3DE; color:#2D5A3D; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; margin-right:6px;">
+                  Editar
+                </button>
+                <button (click)="eliminarCliente(cliente.id!)" style="background:#fce8e6; color:#c0392b; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer;">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="clientes.length === 0">
+              <td colspan="5" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay clientes registrados</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

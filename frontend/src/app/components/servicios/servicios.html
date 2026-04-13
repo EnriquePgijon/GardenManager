@@ -1,125 +1,148 @@
 <!-- Pantalla de gestión de servicios -->
-<div class="min-h-screen bg-gray-100">
+<div class="min-h-screen flex flex-col" style="background:#F5F0E8;">
 
- <!-- Barra de navegación -->
-  <nav class="bg-green-700 text-white px-6 py-4 flex justify-between items-center shadow">
-    <h1 class="text-xl font-bold">🌿 GardenManager</h1>
-    <div class="flex gap-4">
-      <a routerLink="/dashboard" class="hover:underline cursor-pointer">Dashboard</a>
-      <a routerLink="/clientes" class="hover:underline cursor-pointer">Clientes</a>
-      <a routerLink="/trabajadores" class="hover:underline cursor-pointer">Trabajadores</a>
-      <button (click)="cerrarSesion()" class="bg-white text-green-700 px-3 py-1 rounded font-semibold hover:bg-gray-100">
+  <!-- Navbar -->
+  <nav style="background:#1C3A2A; height:58px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:9px; height:9px; background:#C8A96E; border-radius:50%;"></div>
+      <span style="color:#F5F0E8; font-size:14px; letter-spacing:3px; text-transform:uppercase;">GardenManager</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:4px;">
+      <a routerLink="/dashboard" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Dashboard</a>
+      <a routerLink="/clientes" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Clientes</a>
+      <a routerLink="/servicios" style="color:#C8A96E; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none; background:#2D5A3D;">Servicios</a>
+      <a routerLink="/trabajadores" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Trabajadores</a>
+      <button (click)="cerrarSesion()" style="border:1px solid #C8A96E; color:#C8A96E; font-size:11px; padding:6px 14px; border-radius:4px; cursor:pointer; background:transparent; margin-left:8px; letter-spacing:1px;">
         Cerrar sesión
       </button>
     </div>
   </nav>
 
-  <!-- Contenido principal -->
-  <div class="p-8">
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold text-gray-700">Gestión de servicios</h2>
-      <button (click)="nuevoServicio()"
-        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
-        + Nuevo servicio
-      </button>
+  <!-- Cuerpo -->
+  <div style="display:flex; flex:1;">
+
+    <!-- Sidebar -->
+    <div style="width:220px; background:#1C3A2A; padding:28px 0; display:flex; flex-direction:column; gap:2px;">
+      <div style="font-size:9px; color:#4A8C5C; letter-spacing:2px; text-transform:uppercase; padding:16px 24px 8px;">General</div>
+      <a routerLink="/dashboard" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#8aab8a; font-size:13px; text-decoration:none;">
+        <span>▪</span> Dashboard
+      </a>
+      <a routerLink="/clientes" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#8aab8a; font-size:13px; text-decoration:none;">
+        <span>▪</span> Clientes
+      </a>
+      <a routerLink="/servicios" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#F5F0E8; font-size:13px; text-decoration:none; background:#2D5A3D; border-left:2px solid #C8A96E;">
+        <span>▪</span> Servicios
+      </a>
+      <a routerLink="/trabajadores" style="display:flex; align-items:center; gap:12px; padding:10px 24px; color:#8aab8a; font-size:13px; text-decoration:none;">
+        <span>▪</span> Trabajadores
+      </a>
     </div>
 
-    <!-- Formulario para crear o editar servicio -->
-    <div *ngIf="mostrarFormulario" class="bg-white rounded-2xl shadow p-6 mb-6">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4">
-        {{ editando ? 'Editar servicio' : 'Nuevo servicio' }}
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de servicio</label>
-          <select [(ngModel)]="servicioSeleccionado.tipo"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-            <option value="">Selecciona un tipo</option>
-            <option *ngFor="let tipo of tiposServicio" [value]="tipo">{{ tipo }}</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
-          <select [(ngModel)]="servicioSeleccionado.cliente"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-            <option value="">Selecciona un cliente</option>
-            <option *ngFor="let cliente of clientes" [ngValue]="cliente">
-              {{ cliente.nombre }} {{ cliente.apellidos }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-          <input type="date" [(ngModel)]="servicioSeleccionado.fecha"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"/>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
-          <select [(ngModel)]="servicioSeleccionado.estado"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
-            <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
-          </select>
-        </div>
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
-          <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="3"
-            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
-        </div>
-      </div>
-      <div class="flex gap-3 mt-4">
-        <button (click)="guardarServicio()"
-          class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition">
-          Guardar
-        </button>
-        <button (click)="cancelar()"
-          class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg font-semibold transition">
-          Cancelar
-        </button>
-      </div>
-    </div>
+    <!-- Contenido principal -->
+    <div style="flex:1; padding:28px 32px;">
 
-    <!-- Tabla de servicios -->
-    <div class="bg-white rounded-2xl shadow overflow-hidden">
-      <table class="w-full text-left">
-        <thead class="bg-green-50 text-green-700 text-sm font-semibold">
-          <tr>
-            <th class="px-6 py-4">Tipo</th>
-            <th class="px-6 py-4">Cliente</th>
-            <th class="px-6 py-4">Fecha</th>
-            <th class="px-6 py-4">Estado</th>
-            <th class="px-6 py-4">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let servicio of servicios" class="border-t hover:bg-gray-50 transition">
-            <td class="px-6 py-4">{{ servicio.tipo }}</td>
-            <td class="px-6 py-4">{{ nombreCliente(servicio) }}</td>
-            <td class="px-6 py-4">{{ servicio.fecha }}</td>
-            <td class="px-6 py-4">
-              <span [ngClass]="{
-                'bg-yellow-100 text-yellow-700': servicio.estado === 'PENDIENTE',
-                'bg-blue-100 text-blue-700': servicio.estado === 'EN_PROCESO',
-                'bg-green-100 text-green-700': servicio.estado === 'FINALIZADO'
-              }" class="px-3 py-1 rounded-full text-sm font-medium">
-                {{ servicio.estado }}
-              </span>
-            </td>
-            <td class="px-6 py-4 flex gap-2">
-              <button (click)="editarServicio(servicio)"
-                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm transition">
-                Editar
-              </button>
-              <button (click)="eliminarServicio(servicio.id!)"
-                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm transition">
-                Eliminar
-              </button>
-            </td>
-          </tr>
-          <tr *ngIf="servicios.length === 0">
-            <td colspan="5" class="px-6 py-8 text-center text-gray-400">No hay servicios registrados</td>
-          </tr>
-        </tbody>
-      </table>
+      <!-- Cabecera -->
+      <div style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Gestión</div>
+          <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Servicios</div>
+        </div>
+        <button (click)="nuevoServicio()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 20px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+          + Nuevo servicio
+        </button>
+      </div>
+
+      <!-- Formulario -->
+      <div *ngIf="mostrarFormulario" style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; padding:24px; margin-bottom:24px;">
+        <div style="width:30px; height:2px; background:#C8A96E; margin-bottom:16px;"></div>
+        <div style="font-size:14px; color:#1C3A2A; font-weight:500; margin-bottom:20px;">
+          {{ editando ? 'Editar servicio' : 'Nuevo servicio' }}
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Tipo de servicio</label>
+            <select [(ngModel)]="servicioSeleccionado.tipo"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;">
+              <option value="">Selecciona un tipo</option>
+              <option *ngFor="let tipo of tiposServicio" [value]="tipo">{{ tipo }}</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Cliente</label>
+            <select [(ngModel)]="servicioSeleccionado.cliente"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;">
+              <option value="">Selecciona un cliente</option>
+              <option *ngFor="let cliente of clientes" [ngValue]="cliente">{{ cliente.nombre }} {{ cliente.apellidos }}</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Fecha</label>
+            <input type="date" [(ngModel)]="servicioSeleccionado.fecha"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Estado</label>
+            <select [(ngModel)]="servicioSeleccionado.estado"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;">
+              <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Descripción</label>
+            <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="3"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;"></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:24px;">
+          <button (click)="guardarServicio()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 24px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+            Guardar
+          </button>
+          <button (click)="cancelar()" style="background:transparent; color:#8a7a5a; border:0.5px solid #e0d8c8; padding:10px 24px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+        <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+          <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de servicios</span>
+        </div>
+        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+          <thead>
+            <tr style="background:#faf7f2;">
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Tipo</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Cliente</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Fecha</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Estado</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let servicio of servicios" style="border-top:0.5px solid #f0ebe0;">
+              <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ servicio.tipo }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C;">{{ nombreCliente(servicio) }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C;">{{ servicio.fecha }}</td>
+              <td style="padding:12px 18px;">
+                <span *ngIf="servicio.estado === 'PENDIENTE'" style="background:#FFF8E8; color:#C8A96E; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">Pendiente</span>
+                <span *ngIf="servicio.estado === 'EN_PROCESO'" style="background:#EAF3DE; color:#2D5A3D; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">En proceso</span>
+                <span *ngIf="servicio.estado === 'FINALIZADO'" style="background:#e8f0e8; color:#1C3A2A; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">Finalizado</span>
+              </td>
+              <td style="padding:12px 18px;">
+                <button (click)="editarServicio(servicio)" style="background:#EAF3DE; color:#2D5A3D; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; margin-right:6px;">
+                  Editar
+                </button>
+                <button (click)="eliminarServicio(servicio.id!)" style="background:#fce8e6; color:#c0392b; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer;">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="servicios.length === 0">
+              <td colspan="5" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay servicios registrados</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

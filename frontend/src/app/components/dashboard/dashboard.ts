@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth';
 import { ClienteService } from '../../services/cliente';
 import { ServicioService } from '../../services/servicio';
 import { TrabajadorService } from '../../services/trabajador';
+import { Servicio } from '../../models/servicio.model';
 
 // Componente que muestra el panel principal de la aplicación
 @Component({
@@ -21,6 +22,9 @@ export class DashboardComponent implements OnInit {
   totalServicios = 0;
   totalTrabajadores = 0;
   serviciosPendientes = 0;
+
+  // Últimos servicios para mostrar en la tabla
+  ultimosServicios: Servicio[] = [];
 
   constructor(
     private authService: AuthService,
@@ -46,6 +50,7 @@ export class DashboardComponent implements OnInit {
     this.servicioService.obtenerTodos().subscribe(servicios => {
       this.totalServicios = servicios.length;
       this.serviciosPendientes = servicios.filter(s => s.estado === 'PENDIENTE').length;
+      this.ultimosServicios = servicios.slice(-3).reverse();
       this.cdr.detectChanges();
     });
   }
