@@ -1,6 +1,7 @@
 import { Cliente } from './cliente.model';
+import { Trabajador } from './trabajador.model';
 
-// Estructura de un servicio de la empresa de jardinería
+// Define la estructura de un servicio de jardinería
 export interface Servicio {
     id?: number;
     tipo: string;
@@ -8,4 +9,5 @@ export interface Servicio {
     fecha: string;
     estado: string;
     cliente: Cliente;
+    trabajador?: Trabajador;
 }
