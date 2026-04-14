@@ -1,12 +1,13 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { ServicioService } from '../../services/servicio';
 import { ClienteService } from '../../services/cliente';
+import { TrabajadorService } from '../../services/trabajador';
 import { Servicio } from '../../models/servicio.model';
 import { Cliente } from '../../models/cliente.model';
-import { Router } from '@angular/router';
+import { Trabajador } from '../../models/trabajador.model';
 import { AuthService } from '../../services/auth';
 
 // Componente que gestiona la pantalla de servicios
@@ -22,8 +23,14 @@ export class ServiciosComponent implements OnInit {
   // Lista de servicios obtenida del backend
   servicios: Servicio[] = [];
 
+  // Filtro de estado seleccionado
+  filtroEstado = '';
+
   // Lista de clientes para el formulario
   clientes: Cliente[] = [];
+
+  // Lista de trabajadores para el formulario
+  trabajadores: Trabajador[] = [];
 
   // Servicio seleccionado para editar o crear
   servicioSeleccionado: Servicio = this.servicioVacio();
@@ -34,6 +41,10 @@ export class ServiciosComponent implements OnInit {
   // Indica si estamos editando o creando
   editando = false;
 
+  // Mensaje de confirmación visual
+  mensajeExito = '';
+  mensajeError = '';
+
   // Tipos de servicio disponibles
   tiposServicio = ['Mantenimiento', 'Poda', 'Riego', 'Limpieza', 'Instalación'];
 
@@ -43,15 +54,17 @@ export class ServiciosComponent implements OnInit {
   constructor(
     private servicioService: ServicioService,
     private clienteService: ClienteService,
+    private trabajadorService: TrabajadorService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
     private router: Router
   ) {}
 
-  // Al cargar el componente, obtiene todos los servicios y clientes
+  // Al cargar el componente, obtiene todos los servicios, clientes y trabajadores
   ngOnInit() {
     this.cargarServicios();
     this.cargarClientes();
+    this.cargarTrabajadores();
   }
 
   // Obtiene todos los servicios del backend
@@ -66,6 +79,14 @@ export class ServiciosComponent implements OnInit {
   cargarClientes() {
     this.clienteService.obtenerTodos().subscribe(clientes => {
       this.clientes = clientes;
+      this.cdr.detectChanges();
+    });
+  }
+
+  // Obtiene todos los trabajadores para el selector del formulario
+  cargarTrabajadores() {
+    this.trabajadorService.obtenerTodos().subscribe(trabajadores => {
+      this.trabajadores = trabajadores;
       this.cdr.detectChanges();
     });
   }
@@ -95,12 +116,12 @@ export class ServiciosComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-// Guarda el servicio (crea o actualiza según el caso)
+  // Guarda el servicio (crea o actualiza según el caso)
   guardarServicio() {
-    // Validación de campos obligatorios
-    if (!this.servicioSeleccionado.tipo || !this.servicioSeleccionado.fecha || 
+    if (!this.servicioSeleccionado.tipo || !this.servicioSeleccionado.fecha ||
         !this.servicioSeleccionado.cliente.id) {
-      alert('Por favor, rellena todos los campos obligatorios.');
+      this.mensajeError = 'Por favor, rellena todos los campos obligatorios.';
+      setTimeout(() => this.mensajeError = '', 3000);
       return;
     }
 
@@ -108,11 +129,15 @@ export class ServiciosComponent implements OnInit {
       this.servicioService.actualizar(this.servicioSeleccionado.id, this.servicioSeleccionado).subscribe(() => {
         this.cargarServicios();
         this.mostrarFormulario = false;
+        this.mensajeExito = 'Servicio actualizado correctamente.';
+        setTimeout(() => this.mensajeExito = '', 3000);
       });
     } else {
       this.servicioService.crear(this.servicioSeleccionado).subscribe(() => {
         this.cargarServicios();
         this.mostrarFormulario = false;
+        this.mensajeExito = 'Servicio creado correctamente.';
+        setTimeout(() => this.mensajeExito = '', 3000);
       });
     }
   }
@@ -122,6 +147,8 @@ export class ServiciosComponent implements OnInit {
     if (confirm('¿Estás seguro de que quieres eliminar este servicio?')) {
       this.servicioService.eliminar(id).subscribe(() => {
         this.cargarServicios();
+        this.mensajeError = 'Servicio eliminado correctamente.';
+        setTimeout(() => this.mensajeError = '', 3000);
       });
     }
   }
@@ -140,5 +167,11 @@ export class ServiciosComponent implements OnInit {
   cerrarSesion() {
     this.authService.cerrarSesion();
     this.router.navigate(['/login']);
+  }
+
+  // Filtra los servicios según el estado seleccionado
+  get serviciosFiltrados(): Servicio[] {
+    if (!this.filtroEstado) return this.servicios;
+    return this.servicios.filter(s => s.estado === this.filtroEstado);
   }
 }

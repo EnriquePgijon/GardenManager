@@ -52,6 +52,14 @@
         </button>
       </div>
 
+      <!-- Mensajes de confirmación -->
+      <div *ngIf="mensajeExito" style="background:#EAF3DE; border:0.5px solid #4A8C5C; color:#2D5A3D; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+         {{ mensajeExito }}
+      </div>
+      <div *ngIf="mensajeError" style="background:#FFF8E8; border:0.5px solid #C8A96E; color:#8a6a2a; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+         {{ mensajeError }}
+      </div>
+
       <!-- Formulario -->
       <div *ngIf="mostrarFormulario" style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; padding:24px; margin-bottom:24px;">
         <div style="width:30px; height:2px; background:#C8A96E; margin-bottom:16px;"></div>
@@ -87,6 +95,16 @@
               <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
             </select>
           </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Trabajador asignado</label>
+            <select [(ngModel)]="servicioSeleccionado.trabajador"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;">
+              <option [ngValue]="undefined">Sin asignar</option>
+              <option *ngFor="let trabajador of trabajadores" [ngValue]="trabajador">
+                {{ trabajador.nombre }} {{ trabajador.apellidos }}
+              </option>
+            </select>
+          </div>
           <div style="grid-column:1/-1;">
             <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Descripción</label>
             <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="3"
@@ -105,23 +123,41 @@
 
       <!-- Tabla -->
       <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
-        <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+        <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de servicios</span>
+          <div style="display:flex; gap:8px;">
+            <button (click)="filtroEstado=''" [style.background]="filtroEstado==='' ? '#1C3A2A' : '#faf7f2'" [style.color]="filtroEstado==='' ? '#F5F0E8' : '#8a7a5a'" style="border:0.5px solid #e0d8c8; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px;">
+              Todos
+            </button>
+            <button (click)="filtroEstado='PENDIENTE'" [style.background]="filtroEstado==='PENDIENTE' ? '#C8A96E' : '#faf7f2'" [style.color]="filtroEstado==='PENDIENTE' ? '#fff' : '#8a7a5a'" style="border:0.5px solid #e0d8c8; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px;">
+              Pendientes
+            </button>
+            <button (click)="filtroEstado='EN_PROCESO'" [style.background]="filtroEstado==='EN_PROCESO' ? '#2D5A3D' : '#faf7f2'" [style.color]="filtroEstado==='EN_PROCESO' ? '#fff' : '#8a7a5a'" style="border:0.5px solid #e0d8c8; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px;">
+              En proceso
+            </button>
+            <button (click)="filtroEstado='FINALIZADO'" [style.background]="filtroEstado==='FINALIZADO' ? '#1C3A2A' : '#faf7f2'" [style.color]="filtroEstado==='FINALIZADO' ? '#F5F0E8' : '#8a7a5a'" style="border:0.5px solid #e0d8c8; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px;">
+              Finalizados
+            </button>
+          </div>
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:12px;">
           <thead>
             <tr style="background:#faf7f2;">
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Tipo</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Cliente</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Trabajador</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Fecha</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Estado</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let servicio of servicios" style="border-top:0.5px solid #f0ebe0;">
+            <tr *ngFor="let servicio of serviciosFiltrados" style="border-top:0.5px solid #f0ebe0;">
               <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ servicio.tipo }}</td>
               <td style="padding:12px 18px; color:#2C2C2C;">{{ nombreCliente(servicio) }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C;">
+                {{ servicio.trabajador ? servicio.trabajador.nombre + ' ' + servicio.trabajador.apellidos : 'Sin asignar' }}
+              </td>
               <td style="padding:12px 18px; color:#2C2C2C;">{{ servicio.fecha }}</td>
               <td style="padding:12px 18px;">
                 <span *ngIf="servicio.estado === 'PENDIENTE'" style="background:#FFF8E8; color:#C8A96E; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">Pendiente</span>
@@ -137,8 +173,8 @@
                 </button>
               </td>
             </tr>
-            <tr *ngIf="servicios.length === 0">
-              <td colspan="5" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay servicios registrados</td>
+            <tr *ngIf="serviciosFiltrados.length === 0">
+              <td colspan="6" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay servicios registrados</td>
             </tr>
           </tbody>
         </table>
