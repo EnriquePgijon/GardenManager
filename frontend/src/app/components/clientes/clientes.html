@@ -52,6 +52,14 @@
         </button>
       </div>
 
+      <!-- Mensajes de confirmación -->
+        <div *ngIf="mensajeExito" style="background:#EAF3DE; border:0.5px solid #4A8C5C; color:#2D5A3D; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+     {{ mensajeExito }}
+        </div>
+        <div *ngIf="mensajeError" style="background:#FFF8E8; border:0.5px solid #C8A96E; color:#8a6a2a; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+       {{ mensajeError }}
+      </div>
+
       <!-- Formulario -->
       <div *ngIf="mostrarFormulario" style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; padding:24px; margin-bottom:24px;">
         <div style="width:30px; height:2px; background:#C8A96E; margin-bottom:16px;"></div>
@@ -95,10 +103,12 @@
         </div>
       </div>
 
-      <!-- Tabla -->
-      <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
-        <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+              <!-- Tabla -->
+              <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+                <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de clientes</span>
+          <input type="text" [(ngModel)]="busqueda" placeholder="Buscar cliente..."
+            style="border:0.5px solid #e0d8c8; border-radius:4px; padding:6px 12px; font-size:12px; color:#1C3A2A; outline:none; background:#faf7f2; width:200px;"/>
         </div>
         <table style="width:100%; border-collapse:collapse; font-size:12px;">
           <thead>
@@ -111,7 +121,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let cliente of clientes" style="border-top:0.5px solid #f0ebe0;">
+            <tr *ngFor="let cliente of clientesFiltrados" style="border-top:0.5px solid #f0ebe0;">
               <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ cliente.nombre }} {{ cliente.apellidos }}</td>
               <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.telefono }}</td>
               <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.email }}</td>
@@ -125,7 +135,7 @@
                 </button>
               </td>
             </tr>
-            <tr *ngIf="clientes.length === 0">
+            <tr *ngIf="clientesFiltrados.length === 0">
               <td colspan="5" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay clientes registrados</td>
             </tr>
           </tbody>

@@ -20,6 +20,8 @@ export class ClientesComponent implements OnInit {
   // Lista de clientes obtenida del backend
   clientes: Cliente[] = [];
 
+  // Término de búsqueda para filtrar clientes
+  busqueda = '';
   // Cliente seleccionado para editar o crear
   clienteSeleccionado: Cliente = this.clienteVacio();
 
@@ -28,6 +30,10 @@ export class ClientesComponent implements OnInit {
 
   // Indica si estamos editando o creando
   editando = false;
+
+  // Mensaje de confirmación visual
+  mensajeExito = '';
+  mensajeError = '';
 
 constructor(
     private clienteService: ClienteService,
@@ -71,34 +77,40 @@ constructor(
 
  // Guarda el cliente (crea o actualiza según el caso)
   guardarCliente() {
-    // Validación de campos obligatorios
-    if (!this.clienteSeleccionado.nombre || !this.clienteSeleccionado.apellidos || 
-        !this.clienteSeleccionado.telefono || !this.clienteSeleccionado.email) {
-      alert('Por favor, rellena todos los campos obligatorios.');
-      return;
-    }
-
-    if (this.editando && this.clienteSeleccionado.id) {
-      this.clienteService.actualizar(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(() => {
-        this.cargarClientes();
-        this.mostrarFormulario = false;
-      });
-    } else {
-      this.clienteService.crear(this.clienteSeleccionado).subscribe(() => {
-        this.cargarClientes();
-        this.mostrarFormulario = false;
-      });
-    }
+  if (!this.clienteSeleccionado.nombre || !this.clienteSeleccionado.apellidos ||
+      !this.clienteSeleccionado.telefono || !this.clienteSeleccionado.email) {
+    this.mensajeError = 'Por favor, rellena todos los campos obligatorios.';
+    setTimeout(() => this.mensajeError = '', 3000);
+    return;
   }
+
+  if (this.editando && this.clienteSeleccionado.id) {
+    this.clienteService.actualizar(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(() => {
+      this.cargarClientes();
+      this.mostrarFormulario = false;
+      this.mensajeExito = 'Cliente actualizado correctamente.';
+      setTimeout(() => this.mensajeExito = '', 3000);
+    });
+  } else {
+    this.clienteService.crear(this.clienteSeleccionado).subscribe(() => {
+      this.cargarClientes();
+      this.mostrarFormulario = false;
+      this.mensajeExito = 'Cliente creado correctamente.';
+      setTimeout(() => this.mensajeExito = '', 3000);
+    });
+  }
+}
 
   // Elimina un cliente por su id
-  eliminarCliente(id: number) {
-    if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
-      this.clienteService.eliminar(id).subscribe(() => {
-        this.cargarClientes();
-      });
-    }
+ eliminarCliente(id: number) {
+  if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
+    this.clienteService.eliminar(id).subscribe(() => {
+      this.cargarClientes();
+      this.mensajeError = 'Cliente eliminado correctamente.';
+      setTimeout(() => this.mensajeError = '', 3000);
+    });
   }
+}
 
   // Cierra el formulario sin guardar
   cancelar() {
@@ -110,4 +122,16 @@ constructor(
     this.authService.cerrarSesion();
     this.router.navigate(['/login']);
   }
+
+  // Filtra los clientes según el término de búsqueda
+  get clientesFiltrados(): Cliente[] {
+  if (!this.busqueda) return this.clientes;
+  const termino = this.busqueda.toLowerCase();
+  return this.clientes.filter(c =>
+    c.nombre.toLowerCase().includes(termino) ||
+    c.apellidos.toLowerCase().includes(termino) ||
+    c.email.toLowerCase().includes(termino) ||
+    c.telefono.includes(termino)
+  );
+}
 }
