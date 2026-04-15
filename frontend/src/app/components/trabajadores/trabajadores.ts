@@ -29,6 +29,8 @@ export class TrabajadoresComponent implements OnInit {
   // Indica si estamos editando o creando
   editando = false;
 
+  // Término de búsqueda para filtrar trabajadores
+  busqueda = '';
   // Mensaje de confirmación visual
   mensajeExito = '';
   mensajeError = '';
@@ -118,5 +120,16 @@ export class TrabajadoresComponent implements OnInit {
   cerrarSesion() {
     this.authService.cerrarSesion();
     this.router.navigate(['/login']);
+  }
+  // Filtra los trabajadores según el término de búsqueda
+  get trabajadoresFiltrados(): Trabajador[] {
+    if (!this.busqueda) return this.trabajadores;
+    const termino = this.busqueda.toLowerCase();
+    return this.trabajadores.filter(t =>
+      t.nombre.toLowerCase().includes(termino) ||
+      t.apellidos.toLowerCase().includes(termino) ||
+      t.email.toLowerCase().includes(termino) ||
+      t.telefono.includes(termino)
+    );
   }
 }
