@@ -26,6 +26,8 @@ export class ServiciosComponent implements OnInit {
   // Filtro de estado seleccionado
   filtroEstado = '';
 
+  // Término de búsqueda para filtrar servicios
+  busqueda = '';
   // Lista de clientes para el formulario
   clientes: Cliente[] = [];
 
@@ -169,9 +171,22 @@ export class ServiciosComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  // Filtra los servicios según el estado seleccionado
+  
+
+    // Filtra los servicios según el término de búsqueda y el estado
   get serviciosFiltrados(): Servicio[] {
-    if (!this.filtroEstado) return this.servicios;
-    return this.servicios.filter(s => s.estado === this.filtroEstado);
+    let resultado = this.servicios;
+    if (this.filtroEstado) {
+      resultado = resultado.filter(s => s.estado === this.filtroEstado);
+    }
+    if (this.busqueda) {
+      const termino = this.busqueda.toLowerCase();
+      resultado = resultado.filter(s =>
+        s.tipo.toLowerCase().includes(termino) ||
+        s.cliente.nombre.toLowerCase().includes(termino) ||
+        s.cliente.apellidos.toLowerCase().includes(termino)
+      );
+    }
+    return resultado;
   }
 }

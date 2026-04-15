@@ -124,8 +124,12 @@
       <!-- Tabla -->
       <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
         <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:16px;">
           <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de servicios</span>
-          <div style="display:flex; gap:8px;">
+          <input type="text" [(ngModel)]="busqueda" placeholder="Buscar servicio..."
+            style="border:0.5px solid #e0d8c8; border-radius:4px; padding:6px 12px; font-size:12px; color:#1C3A2A; outline:none; background:#faf7f2; width:200px;"/>
+        </div>         
+         <div style="display:flex; gap:8px;">
             <button (click)="filtroEstado=''" [style.background]="filtroEstado==='' ? '#1C3A2A' : '#faf7f2'" [style.color]="filtroEstado==='' ? '#F5F0E8' : '#8a7a5a'" style="border:0.5px solid #e0d8c8; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px;">
               Todos
             </button>
