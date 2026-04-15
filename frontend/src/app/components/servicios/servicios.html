@@ -164,9 +164,15 @@
               </td>
               <td style="padding:12px 18px; color:#2C2C2C;">{{ servicio.fecha }}</td>
               <td style="padding:12px 18px;">
-                <span *ngIf="servicio.estado === 'PENDIENTE'" style="background:#FFF8E8; color:#C8A96E; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">Pendiente</span>
-                <span *ngIf="servicio.estado === 'EN_PROCESO'" style="background:#EAF3DE; color:#2D5A3D; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">En proceso</span>
-                <span *ngIf="servicio.estado === 'FINALIZADO'" style="background:#e8f0e8; color:#1C3A2A; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:500;">Finalizado</span>
+                <select (change)="cambiarEstado(servicio, $any($event.target).value)"
+                  [value]="servicio.estado"
+                  style="border:0.5px solid #e0d8c8; border-radius:4px; padding:5px 10px; font-size:11px; color:#1C3A2A; outline:none; cursor:pointer;"
+                  [style.background]="servicio.estado === 'PENDIENTE' ? '#FFF8E8' : servicio.estado === 'EN_PROCESO' ? '#EAF3DE' : '#e8f0e8'"
+                  [style.color]="servicio.estado === 'PENDIENTE' ? '#C8A96E' : servicio.estado === 'EN_PROCESO' ? '#2D5A3D' : '#1C3A2A'">
+                  <option value="PENDIENTE">Pendiente</option>
+                  <option value="EN_PROCESO">En proceso</option>
+                  <option value="FINALIZADO">Finalizado</option>
+                </select>
               </td>
               <td style="padding:12px 18px;">
                 <button (click)="editarServicio(servicio)" style="background:#EAF3DE; color:#2D5A3D; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; margin-right:6px;">
