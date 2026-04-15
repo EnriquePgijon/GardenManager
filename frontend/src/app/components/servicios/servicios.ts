@@ -189,4 +189,13 @@ export class ServiciosComponent implements OnInit {
     }
     return resultado;
   }
+    // Cambia el estado de un servicio directamente desde la tabla
+  cambiarEstado(servicio: Servicio, nuevoEstado: string) {
+    servicio.estado = nuevoEstado;
+    this.servicioService.actualizar(servicio.id!, servicio).subscribe(() => {
+      this.cargarServicios();
+      this.mensajeExito = 'Estado actualizado correctamente.';
+      setTimeout(() => this.mensajeExito = '', 3000);
+    });
+  }
 }
