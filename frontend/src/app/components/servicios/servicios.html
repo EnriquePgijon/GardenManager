@@ -106,10 +106,22 @@
             </select>
           </div>
           <div style="grid-column:1/-1;">
-            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Descripción</label>
-            <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="3"
-              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;"></textarea>
-          </div>
+  <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Descripción interna</label>
+  <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="2"
+    style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;"></textarea>
+</div>
+
+    <div style="grid-column:1/-1;">
+      <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Concepto de factura</label>
+      <textarea [(ngModel)]="servicioSeleccionado.concepto" rows="2"
+        style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;" placeholder="Descripción que verá el cliente en la factura..."></textarea>
+    </div>
+
+    <div>
+      <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Precio (sin IVA) €</label>
+      <input type="number" [(ngModel)]="servicioSeleccionado.precio" min="0" step="0.01"
+        style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+    </div>
         </div>
         <div style="display:flex; gap:12px; margin-top:24px;">
           <button (click)="guardarServicio()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 24px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
@@ -177,6 +189,9 @@
               <td style="padding:12px 18px;">
                 <button (click)="editarServicio(servicio)" style="background:#EAF3DE; color:#2D5A3D; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; margin-right:6px;">
                   Editar
+                </button>
+                <button (click)="generarFactura(servicio)" style="background:#FFF8E8; color:#8a6a2a; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; margin-right:6px;">
+                  Factura PDF
                 </button>
                 <button (click)="eliminarServicio(servicio.id!)" style="background:#fce8e6; color:#c0392b; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer;">
                   Eliminar
