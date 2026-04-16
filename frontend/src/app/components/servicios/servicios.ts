@@ -9,7 +9,7 @@ import { Servicio } from '../../models/servicio.model';
 import { Cliente } from '../../models/cliente.model';
 import { Trabajador } from '../../models/trabajador.model';
 import { AuthService } from '../../services/auth';
-
+import { FacturaService } from '../../services/factura';
 // Componente que gestiona la pantalla de servicios
 @Component({
   selector: 'app-servicios',
@@ -59,7 +59,8 @@ export class ServiciosComponent implements OnInit {
     private trabajadorService: TrabajadorService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private facturaService: FacturaService
   ) {}
 
   // Al cargar el componente, obtiene todos los servicios, clientes y trabajadores
@@ -93,16 +94,17 @@ export class ServiciosComponent implements OnInit {
     });
   }
 
-  // Devuelve un servicio vacío para el formulario
   servicioVacio(): Servicio {
-    return {
-      tipo: '',
-      descripcion: '',
-      fecha: '',
-      estado: 'PENDIENTE',
-      cliente: { nombre: '', apellidos: '', telefono: '', email: '', direccion: '' }
-    };
-  }
+  return {
+    tipo: '',
+    descripcion: '',
+    concepto: '',
+    precio: 0,
+    fecha: '',
+    estado: 'PENDIENTE',
+    cliente: { nombre: '', apellidos: '', telefono: '', email: '', direccion: '' }
+  };
+}
 
   // Abre el formulario para crear un servicio nuevo
   nuevoServicio() {
@@ -111,9 +113,24 @@ export class ServiciosComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-  // Abre el formulario para editar un servicio existente
+    // Abre el formulario para editar un servicio existente
   editarServicio(servicio: Servicio) {
     this.servicioSeleccionado = { ...servicio };
+    
+    // Busca el cliente en la lista para que el selector lo reconozca
+    const clienteEncontrado = this.clientes.find(c => c.id === servicio.cliente.id);
+    if (clienteEncontrado) {
+      this.servicioSeleccionado.cliente = clienteEncontrado;
+    }
+
+    // Busca el trabajador en la lista para que el selector lo reconozca
+    if (servicio.trabajador) {
+      const trabajadorEncontrado = this.trabajadores.find(t => t.id === servicio.trabajador!.id);
+      if (trabajadorEncontrado) {
+        this.servicioSeleccionado.trabajador = trabajadorEncontrado;
+      }
+    }
+
     this.editando = true;
     this.mostrarFormulario = true;
   }
@@ -197,5 +214,10 @@ export class ServiciosComponent implements OnInit {
       this.mensajeExito = 'Estado actualizado correctamente.';
       setTimeout(() => this.mensajeExito = '', 3000);
     });
+  }
+
+    // Genera y descarga la factura de un servicio en PDF
+  generarFactura(servicio: Servicio): void {
+    this.facturaService.generarFactura(servicio);
   }
 }
