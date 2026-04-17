@@ -6,6 +6,8 @@ export interface Servicio {
     id?: number;
     tipo: string;
     descripcion: string;
+    concepto: string;
+    precio: number;
     fecha: string;
     estado: string;
     cliente: Cliente;
