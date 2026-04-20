@@ -6,7 +6,9 @@ import { ClienteService } from '../../services/cliente';
 import { Cliente } from '../../models/cliente.model';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
-
+import { ServicioService } from '../../services/servicio';
+import { Servicio } from '../../models/servicio.model';
+import { FacturaService } from '../../services/factura';
 // Componente que gestiona la pantalla de clientes
 @Component({
   selector: 'app-clientes',
@@ -31,15 +33,22 @@ export class ClientesComponent implements OnInit {
   // Indica si estamos editando o creando
   editando = false;
 
+  // Cliente seleccionado para ver su historial
+  clienteHistorial: any = null;
+
+  // Servicios del cliente seleccionado
+  historialServicios: Servicio[] = [];
   // Mensaje de confirmación visual
   mensajeExito = '';
   mensajeError = '';
 
-constructor(
+  constructor(
     private clienteService: ClienteService,
+    private servicioService: ServicioService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private facturaService: FacturaService,
   ) {}
 
   // Al cargar el componente, obtiene todos los clientes
@@ -99,7 +108,7 @@ constructor(
       setTimeout(() => this.mensajeExito = '', 3000);
     });
   }
-}
+  }
 
   // Elimina un cliente por su id
  eliminarCliente(id: number) {
@@ -110,7 +119,7 @@ constructor(
       setTimeout(() => this.mensajeError = '', 3000);
     });
   }
-}
+  }
 
   // Cierra el formulario sin guardar
   cancelar() {
@@ -133,5 +142,31 @@ constructor(
     c.email.toLowerCase().includes(termino) ||
     c.telefono.includes(termino)
   );
-}
+  }
+  // Muestra el historial de servicios de un cliente
+  verHistorial(cliente: any) {
+    if (this.clienteHistorial?.id === cliente.id) {
+      this.clienteHistorial = null;
+      this.historialServicios = [];
+      return;
+    }
+    this.clienteHistorial = cliente;
+    this.servicioService.obtenerPorCliente(cliente.id).subscribe(servicios => {
+      this.historialServicios = servicios;
+      this.cdr.detectChanges();
+    });
+  }
+
+  // Formatea la fecha al formato español
+  formatearFecha(fecha: string): string {
+    if (!fecha) return 'Sin fecha';
+    const partes = fecha.split('-');
+    if (partes.length !== 3) return fecha;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+  // Exporta el listado de clientes a PDF
+  exportarPDF(): void {
+    this.facturaService.exportarClientes(this.clientes);
+  }
 }

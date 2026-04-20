@@ -220,4 +220,12 @@ export class ServiciosComponent implements OnInit {
   generarFactura(servicio: Servicio): void {
     this.facturaService.generarFactura(servicio);
   }
+
+    // Convierte una fecha del formato yyyy-mm-dd al formato español dd/mm/yyyy
+  formatearFecha(fecha: string): string {
+    if (!fecha) return 'Sin fecha';
+    const partes = fecha.split('-');
+    if (partes.length !== 3) return fecha;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
 }

@@ -39,7 +39,7 @@
     </div>
 
     <!-- Contenido principal -->
-    <div style="flex:1; padding:28px 32px;">
+    <div style="flex:1; padding:28px 32px; overflow:auto;">
 
       <!-- Cabecera -->
       <div style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:flex-end;">
@@ -47,17 +47,22 @@
           <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Gestión</div>
           <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Clientes</div>
         </div>
-        <button (click)="nuevoCliente()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 20px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
-          + Nuevo cliente
-        </button>
+        <div style="display:flex; gap:10px;">
+          <button (click)="exportarPDF()" style="background:transparent; color:#1C3A2A; border:0.5px solid #1C3A2A; padding:10px 20px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+            Exportar PDF
+          </button>
+          <button (click)="nuevoCliente()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 20px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+            + Nuevo cliente
+          </button>
+        </div>
       </div>
 
       <!-- Mensajes de confirmación -->
-        <div *ngIf="mensajeExito" style="background:#EAF3DE; border:0.5px solid #4A8C5C; color:#2D5A3D; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
-     {{ mensajeExito }}
-        </div>
-        <div *ngIf="mensajeError" style="background:#FFF8E8; border:0.5px solid #C8A96E; color:#8a6a2a; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
-       {{ mensajeError }}
+      <div *ngIf="mensajeExito" style="background:#EAF3DE; border:0.5px solid #4A8C5C; color:#2D5A3D; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+        ✓ {{ mensajeExito }}
+      </div>
+      <div *ngIf="mensajeError" style="background:#FFF8E8; border:0.5px solid #C8A96E; color:#8a6a2a; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+        ✗ {{ mensajeError }}
       </div>
 
       <!-- Formulario -->
@@ -103,29 +108,31 @@
         </div>
       </div>
 
-              <!-- Tabla -->
-              <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
-                <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8; display:flex; justify-content:space-between; align-items:center;">
+      <!-- Tabla -->
+      <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+        <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de clientes</span>
           <input type="text" [(ngModel)]="busqueda" placeholder="Buscar cliente..."
             style="border:0.5px solid #e0d8c8; border-radius:4px; padding:6px 12px; font-size:12px; color:#1C3A2A; outline:none; background:#faf7f2; width:200px;"/>
         </div>
-        <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <table style="width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed;">
           <thead>
             <tr style="background:#faf7f2;">
-              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Nombre</th>
-              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Teléfono</th>
-              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Email</th>
-              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Dirección</th>
-              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Acciones</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px; width:20%;">Nombre</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px; width:15%;">Teléfono</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px; width:22%;">Email</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px; width:25%;">Dirección</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px; width:18%;">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let cliente of clientesFiltrados" style="border-top:0.5px solid #f0ebe0;">
-              <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ cliente.nombre }} {{ cliente.apellidos }}</td>
-              <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.telefono }}</td>
-              <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.email }}</td>
-              <td style="padding:12px 18px; color:#2C2C2C;">{{ cliente.direccion }}</td>
+              <td style="padding:12px 18px; color:#1C3A2A; font-weight:500; cursor:pointer; text-decoration:underline; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" (click)="verHistorial(cliente)">
+                {{ cliente.nombre }} {{ cliente.apellidos }}
+              </td>
+              <td style="padding:12px 18px; color:#2C2C2C; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ cliente.telefono }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ cliente.email }}</td>
+              <td style="padding:12px 18px; color:#2C2C2C; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ cliente.direccion }}</td>
               <td style="padding:12px 18px;">
                 <button (click)="editarCliente(cliente)" style="background:#EAF3DE; color:#2D5A3D; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; margin-right:6px;">
                   Editar
@@ -140,6 +147,47 @@
             </tr>
           </tbody>
         </table>
+
+        <!-- Panel de historial de servicios del cliente -->
+        <div *ngIf="clienteHistorial" style="border-top:0.5px solid #e0d8c8; padding:20px 18px; background:#faf7f2;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <div>
+              <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;">Historial</div>
+              <div style="font-size:14px; color:#1C3A2A; font-weight:500;">Servicios de {{ clienteHistorial.nombre }} {{ clienteHistorial.apellidos }}</div>
+            </div>
+            <button (click)="clienteHistorial = null" style="background:transparent; border:0.5px solid #e0d8c8; color:#8a7a5a; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer;">
+              Cerrar
+            </button>
+          </div>
+          <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead>
+              <tr style="background:#f0ebe0;">
+                <th style="padding:8px 14px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Tipo</th>
+                <th style="padding:8px 14px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Fecha</th>
+                <th style="padding:8px 14px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Estado</th>
+                <th style="padding:8px 14px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Trabajador</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let servicio of historialServicios" style="border-top:0.5px solid #e0d8c8;">
+                <td style="padding:10px 14px; color:#1C3A2A; font-weight:500;">{{ servicio.tipo }}</td>
+                <td style="padding:10px 14px; color:#2C2C2C;">{{ formatearFecha(servicio.fecha) }}</td>
+                <td style="padding:10px 14px;">
+                  <span *ngIf="servicio.estado === 'PENDIENTE'" style="background:#FFF8E8; color:#C8A96E; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500;">Pendiente</span>
+                  <span *ngIf="servicio.estado === 'EN_PROCESO'" style="background:#EAF3DE; color:#2D5A3D; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500;">En proceso</span>
+                  <span *ngIf="servicio.estado === 'FINALIZADO'" style="background:#e8f0e8; color:#1C3A2A; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500;">Finalizado</span>
+                </td>
+                <td style="padding:10px 14px; color:#2C2C2C;">
+                  {{ servicio.trabajador ? servicio.trabajador.nombre + ' ' + servicio.trabajador.apellidos : 'Sin asignar' }}
+                </td>
+              </tr>
+              <tr *ngIf="historialServicios.length === 0">
+                <td colspan="4" style="padding:16px 14px; text-align:center; color:#aaa; font-size:12px;">Este cliente no tiene servicios registrados</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>

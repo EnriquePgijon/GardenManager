@@ -23,6 +23,8 @@ export class DashboardComponent implements OnInit {
   totalTrabajadores = 0;
   serviciosPendientes = 0;
 
+  serviciosEnProceso = 0;
+  serviciosFinalizados = 0;
   // Últimos servicios para mostrar en la tabla
   ultimosServicios: Servicio[] = [];
 
@@ -47,9 +49,11 @@ export class DashboardComponent implements OnInit {
       this.cdr.detectChanges();
     });
 
-    this.servicioService.obtenerTodos().subscribe(servicios => {
+      this.servicioService.obtenerTodos().subscribe(servicios => {
       this.totalServicios = servicios.length;
       this.serviciosPendientes = servicios.filter(s => s.estado === 'PENDIENTE').length;
+      this.serviciosEnProceso = servicios.filter(s => s.estado === 'EN_PROCESO').length;
+      this.serviciosFinalizados = servicios.filter(s => s.estado === 'FINALIZADO').length;
       this.ultimosServicios = servicios.slice(-3).reverse();
       this.cdr.detectChanges();
     });

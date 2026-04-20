@@ -191,4 +191,100 @@ export class FacturaService {
     // Descargar
     doc.save('Factura_' + numeroFactura + '.pdf');
   }
+    // Genera y descarga un PDF con el listado completo de clientes
+  exportarClientes(clientes: any[]): void {
+    const doc = new jsPDF();
+    const fecha = new Date().toLocaleDateString('es-ES');
+
+    // Colores
+    const verdeOscuro: [number, number, number] = [28, 58, 42];
+    const dorado: [number, number, number] = [200, 169, 110];
+    const crema: [number, number, number] = [245, 240, 232];
+    const grisTexto: [number, number, number] = [100, 100, 100];
+
+    // Cabecera
+    doc.setFillColor(...verdeOscuro);
+    doc.rect(0, 0, 210, 40, 'F');
+    doc.setFillColor(...dorado);
+    doc.rect(0, 40, 210, 1.5, 'F');
+
+    doc.setTextColor(...crema);
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('GardenManager', 20, 18);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(106, 171, 138);
+    doc.text('Listado de clientes — Generado el ' + fecha, 20, 28);
+
+    doc.setTextColor(...dorado);
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TOTAL: ' + clientes.length + ' clientes', 190, 22, { align: 'right' });
+
+    // Cabecera tabla
+    doc.setFillColor(...verdeOscuro);
+    doc.rect(15, 50, 180, 10, 'F');
+    doc.setTextColor(...crema);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('NOMBRE', 20, 57);
+    doc.text('TELÉFONO', 85, 57);
+    doc.text('EMAIL', 120, 57);
+   
+
+    // Filas de clientes
+    let y = 60;
+    clientes.forEach((cliente, index) => {
+      if (y > 260) {
+        doc.addPage();
+        y = 20;
+        doc.setFillColor(...verdeOscuro);
+        doc.rect(15, y, 180, 10, 'F');
+        doc.setTextColor(...crema);
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.text('NOMBRE', 20, y + 7);
+        doc.text('TELÉFONO', 85, y + 7);
+        doc.text('EMAIL', 120, y + 7);
+        doc.text('DIRECCIÓN', 165, y + 7);
+        y += 10;
+      }
+
+      if (index % 2 === 0) {
+        doc.setFillColor(250, 247, 242);
+        doc.rect(15, y, 180, 12, 'F');
+      }
+
+      doc.setTextColor(44, 44, 44);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.text(cliente.nombre + ' ' + cliente.apellidos, 20, y + 8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...grisTexto);
+      doc.text(cliente.telefono || '', 85, y + 8);
+      doc.text(cliente.email || '', 120, y + 8);
+      
+
+      doc.setDrawColor(224, 216, 200);
+      doc.setLineWidth(0.3);
+      doc.line(15, y + 12, 195, y + 12);
+
+      y += 12;
+    });
+
+    // Pie de página
+    doc.setFillColor(...verdeOscuro);
+    doc.rect(0, 272, 210, 28, 'F');
+    doc.setFillColor(...dorado);
+    doc.rect(0, 272, 210, 1.5, 'F');
+    doc.setTextColor(106, 171, 138);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('GardenManager — Servicios profesionales de jardinería', 105, 283, { align: 'center' });
+    doc.setTextColor(...dorado);
+    doc.text('Documento generado automáticamente', 105, 291, { align: 'center' });
+
+    doc.save('Clientes_GardenManager_' + fecha.replace(/\//g, '-') + '.pdf');
+  }
 }

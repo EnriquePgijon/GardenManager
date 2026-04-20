@@ -39,16 +39,16 @@
     </div>
 
     <!-- Contenido principal -->
-    <div style="flex:1; padding:28px 32px; overflow:auto;">
+    <div style="flex:1; padding:28px 32px; display:flex; flex-direction:column; gap:16px; overflow:auto;">
 
       <!-- Cabecera -->
-      <div style="margin-bottom:28px;">
+      <div>
         <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de administración</div>
         <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Resumen general</div>
       </div>
 
-      <!-- Tarjetas de estadísticas -->
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;">
+      <!-- Fila 1: Tarjetas de estadísticas -->
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
 
         <div style="background:#fff; border-radius:8px; padding:18px 20px; border:0.5px solid #e0d8c8; position:relative; overflow:hidden;">
           <div style="position:absolute; top:0; left:0; width:3px; height:100%; background:#1C3A2A;"></div>
@@ -80,8 +80,8 @@
 
       </div>
 
-      <!-- Grid inferior -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <!-- Fila 2: Tabla + Gráfica -->
+      <div style="display:grid; grid-template-columns:1.3fr 0.7fr; gap:16px;">
 
         <!-- Últimos servicios -->
         <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
@@ -114,49 +114,113 @@
           </table>
         </div>
 
-        <!-- Accesos rápidos -->
-        <div style="display:flex; flex-direction:column; gap:10px;">
+        <!-- Gráfica de dona -->
+        <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+          <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+            <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Servicios por estado</span>
+          </div>
+          <div style="padding:20px; display:flex; flex-direction:column; align-items:center; gap:16px;">
 
-          <a routerLink="/clientes" style="background:#1C3A2A; border-radius:10px; cursor:pointer; text-decoration:none; display:block; padding:18px 20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div style="display:flex; align-items:center; gap:14px;">
-                <div style="width:42px; height:42px; border-radius:8px; background:rgba(200,169,110,0.15); display:flex; align-items:center; justify-content:center; color:#C8A96E; font-size:20px; font-weight:200;">C</div>
-                <div>
-                  <div style="font-size:14px; font-weight:500; color:#F5F0E8;">Clientes</div>
-                  <div style="font-size:11px; color:#6aab8a; margin-top:2px;">{{ totalClientes }} registrados</div>
-                </div>
+            <!-- SVG Dona -->
+            <div style="position:relative; width:130px; height:130px;">
+              <svg width="130" height="130" viewBox="0 0 130 130" style="transform:rotate(-90deg);">
+                <circle cx="65" cy="65" r="50" fill="none" stroke="#f0ebe0" stroke-width="18"/>
+                <circle cx="65" cy="65" r="50" fill="none" stroke="#C8A96E" stroke-width="18"
+                  [attr.stroke-dasharray]="(serviciosPendientes / totalServicios) * 314 + ' ' + (314 - (serviciosPendientes / totalServicios) * 314)"
+                  stroke-dashoffset="0"/>
+                <circle cx="65" cy="65" r="50" fill="none" stroke="#4A8C5C" stroke-width="18"
+                  [attr.stroke-dasharray]="(serviciosEnProceso / totalServicios) * 314 + ' ' + (314 - (serviciosEnProceso / totalServicios) * 314)"
+                  [attr.stroke-dashoffset]="-(serviciosPendientes / totalServicios) * 314"/>
+                <circle cx="65" cy="65" r="50" fill="none" stroke="#1C3A2A" stroke-width="18"
+                  [attr.stroke-dasharray]="(serviciosFinalizados / totalServicios) * 314 + ' ' + (314 - (serviciosFinalizados / totalServicios) * 314)"
+                  [attr.stroke-dashoffset]="-(serviciosPendientes / totalServicios) * 314 - (serviciosEnProceso / totalServicios) * 314"/>
+              </svg>
+              <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div style="font-size:26px; font-weight:500; color:#1C3A2A; line-height:1;">{{ totalServicios }}</div>
+                <div style="font-size:9px; color:#aaa; letter-spacing:1px; text-transform:uppercase; margin-top:2px;">Total</div>
               </div>
-              <span style="font-size:18px; color:#C8A96E;">→</span>
             </div>
-          </a>
 
-          <a routerLink="/servicios" style="background:#2D5A3D; border-radius:10px; cursor:pointer; text-decoration:none; display:block; padding:18px 20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div style="display:flex; align-items:center; gap:14px;">
-                <div style="width:42px; height:42px; border-radius:8px; background:rgba(200,169,110,0.15); display:flex; align-items:center; justify-content:center; color:#C8A96E; font-size:20px; font-weight:200;">S</div>
-                <div>
-                  <div style="font-size:14px; font-weight:500; color:#F5F0E8;">Servicios</div>
-                  <div style="font-size:11px; color:#8acc9e; margin-top:2px;">{{ totalServicios }} en total</div>
+            <!-- Leyenda -->
+            <div style="width:100%; display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div style="width:10px; height:10px; border-radius:50%; background:#C8A96E; flex-shrink:0;"></div>
+                  <span style="font-size:11px; color:#1C3A2A;">Pendientes</span>
                 </div>
+                <span style="font-size:11px; color:#aaa; font-weight:500;">{{ serviciosPendientes }}</span>
               </div>
-              <span style="font-size:18px; color:#C8A96E;">→</span>
-            </div>
-          </a>
-
-          <a routerLink="/trabajadores" style="background:#F5F0E8; border-radius:10px; cursor:pointer; text-decoration:none; display:block; padding:18px 20px; border:0.5px solid #e0d8c8;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <div style="display:flex; align-items:center; gap:14px;">
-                <div style="width:42px; height:42px; border-radius:8px; background:rgba(28,58,42,0.08); display:flex; align-items:center; justify-content:center; color:#1C3A2A; font-size:20px; font-weight:200;">T</div>
-                <div>
-                  <div style="font-size:14px; font-weight:500; color:#1C3A2A;">Trabajadores</div>
-                  <div style="font-size:11px; color:#8a7a5a; margin-top:2px;">{{ totalTrabajadores }} en plantilla</div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div style="width:10px; height:10px; border-radius:50%; background:#4A8C5C; flex-shrink:0;"></div>
+                  <span style="font-size:11px; color:#1C3A2A;">En proceso</span>
                 </div>
+                <span style="font-size:11px; color:#aaa; font-weight:500;">{{ serviciosEnProceso }}</span>
               </div>
-              <span style="font-size:18px; color:#C8A96E;">→</span>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div style="width:10px; height:10px; border-radius:50%; background:#1C3A2A; flex-shrink:0;"></div>
+                  <span style="font-size:11px; color:#1C3A2A;">Finalizados</span>
+                </div>
+                <span style="font-size:11px; color:#aaa; font-weight:500;">{{ serviciosFinalizados }}</span>
+              </div>
             </div>
-          </a>
 
+          </div>
         </div>
+
+      </div>
+
+      <!-- Fila 3: Accesos rápidos -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+
+        <a routerLink="/clientes" style="background:#1C3A2A; border-radius:10px; cursor:pointer; text-decoration:none; display:block;">
+          <div style="padding:22px 24px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="width:42px; height:42px; border-radius:8px; background:rgba(200,169,110,0.15); display:flex; align-items:center; justify-content:center; color:#C8A96E; font-size:20px; font-weight:200;">C</div>
+              <div style="font-size:28px; font-weight:500; color:#F5F0E8; line-height:1;">{{ totalClientes }}</div>
+            </div>
+            <div style="font-size:15px; font-weight:500; color:#F5F0E8;">Clientes</div>
+            <div style="font-size:11px; line-height:1.7; color:#6aab8a;">Gestiona la información de tus clientes.</div>
+            <div style="height:0.5px; width:100%; background:rgba(255,255,255,0.15);"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#C8A96E;">Ver clientes</span>
+              <span style="font-size:18px; color:#C8A96E;">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a routerLink="/servicios" style="background:#2D5A3D; border-radius:10px; cursor:pointer; text-decoration:none; display:block;">
+          <div style="padding:22px 24px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="width:42px; height:42px; border-radius:8px; background:rgba(200,169,110,0.15); display:flex; align-items:center; justify-content:center; color:#C8A96E; font-size:20px; font-weight:200;">S</div>
+              <div style="font-size:28px; font-weight:500; color:#F5F0E8; line-height:1;">{{ totalServicios }}</div>
+            </div>
+            <div style="font-size:15px; font-weight:500; color:#F5F0E8;">Servicios</div>
+            <div style="font-size:11px; line-height:1.7; color:#8acc9e;">Controla los trabajos y su estado actual.</div>
+            <div style="height:0.5px; width:100%; background:rgba(255,255,255,0.15);"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#C8A96E;">Ver servicios</span>
+              <span style="font-size:18px; color:#C8A96E;">→</span>
+            </div>
+          </div>
+        </a>
+
+        <a routerLink="/trabajadores" style="background:#F5F0E8; border-radius:10px; cursor:pointer; text-decoration:none; display:block; border:0.5px solid #e0d8c8;">
+          <div style="padding:22px 24px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="width:42px; height:42px; border-radius:8px; background:rgba(28,58,42,0.08); display:flex; align-items:center; justify-content:center; color:#1C3A2A; font-size:20px; font-weight:200;">T</div>
+              <div style="font-size:28px; font-weight:500; color:#1C3A2A; line-height:1;">{{ totalTrabajadores }}</div>
+            </div>
+            <div style="font-size:15px; font-weight:500; color:#1C3A2A;">Trabajadores</div>
+            <div style="font-size:11px; line-height:1.7; color:#8a7a5a;">Administra tu equipo de trabajo.</div>
+            <div style="height:0.5px; width:100%; background:rgba(28,58,42,0.15);"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#1C3A2A;">Ver trabajadores</span>
+              <span style="font-size:18px; color:#C8A96E;">→</span>
+            </div>
+          </div>
+        </a>
 
       </div>
 
