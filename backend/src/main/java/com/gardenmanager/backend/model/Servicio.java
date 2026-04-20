@@ -20,6 +20,12 @@ public class Servicio {
     // Descripción detallada del trabajo a realizar
     private String descripcion;
 
+    // Concepto de la factura para el cliente
+    private String concepto;
+
+    // Precio del servicio sin IVA
+    private Double precio;
+
     // Fecha en la que se solicita el servicio
     private String fecha;
 
@@ -30,4 +36,9 @@ public class Servicio {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
+
+    // Trabajador asignado al servicio
+    @ManyToOne
+    @JoinColumn(name = "trabajador_id")
+    private Trabajador trabajador;
 }
