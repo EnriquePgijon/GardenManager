@@ -3,14 +3,14 @@
 
   <!-- Navbar -->
   <nav style="background:#1C3A2A; height:58px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0;">
-<div style="display:flex; align-items:center;">
-  <svg width="160" height="40" viewBox="0 0 220 60">
-    <path d="M20 45 C20 20, 45 10, 45 10 C45 10, 50 35, 30 45 Z" fill="#C8A96E"/>
-    <path d="M45 10 L32 42" stroke="#F5F0E8" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
-    <text x="58" y="28" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#F5F0E8" letter-spacing="1">Garden</text>
-    <text x="58" y="46" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#C8A96E" letter-spacing="1">Manager</text>
-  </svg>
-</div>
+    <div style="display:flex; align-items:center;">
+      <svg width="160" height="40" viewBox="0 0 220 60">
+        <path d="M20 45 C20 20, 45 10, 45 10 C45 10, 50 35, 30 45 Z" fill="#C8A96E"/>
+        <path d="M45 10 L32 42" stroke="#F5F0E8" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        <text x="58" y="28" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#F5F0E8" letter-spacing="1">Garden</text>
+        <text x="58" y="46" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#C8A96E" letter-spacing="1">Manager</text>
+      </svg>
+    </div>
     <div style="display:flex; align-items:center; gap:4px;">
       <a routerLink="/dashboard" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Dashboard</a>
       <a routerLink="/clientes" style="color:#8aab8a; font-size:12px; padding:6px 14px; border-radius:4px; text-decoration:none;">Clientes</a>
@@ -58,10 +58,10 @@
 
       <!-- Mensajes de confirmación -->
       <div *ngIf="mensajeExito" style="background:#EAF3DE; border:0.5px solid #4A8C5C; color:#2D5A3D; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
-         {{ mensajeExito }}
+        ✓ {{ mensajeExito }}
       </div>
       <div *ngIf="mensajeError" style="background:#FFF8E8; border:0.5px solid #C8A96E; color:#8a6a2a; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
-         {{ mensajeError }}
+        ✗ {{ mensajeError }}
       </div>
 
       <!-- Formulario -->
@@ -109,23 +109,21 @@
               </option>
             </select>
           </div>
+          <div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Precio (sin IVA) €</label>
+            <input type="number" [(ngModel)]="servicioSeleccionado.precio" min="0" step="0.01"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+          </div>
           <div style="grid-column:1/-1;">
-  <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Descripción interna</label>
-  <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="2"
-    style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;"></textarea>
-</div>
-
-    <div style="grid-column:1/-1;">
-      <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Concepto de factura</label>
-      <textarea [(ngModel)]="servicioSeleccionado.concepto" rows="2"
-        style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;" placeholder="Descripción que verá el cliente en la factura..."></textarea>
-    </div>
-
-    <div>
-      <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Precio (sin IVA) €</label>
-      <input type="number" [(ngModel)]="servicioSeleccionado.precio" min="0" step="0.01"
-        style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
-    </div>
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Descripción interna</label>
+            <textarea [(ngModel)]="servicioSeleccionado.descripcion" rows="2"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;"></textarea>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Concepto de factura</label>
+            <textarea [(ngModel)]="servicioSeleccionado.concepto" rows="2"
+              style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent; resize:none;" placeholder="Descripción que verá el cliente en la factura..."></textarea>
+          </div>
         </div>
         <div style="display:flex; gap:12px; margin-top:24px;">
           <button (click)="guardarServicio()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 24px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
@@ -140,12 +138,12 @@
       <!-- Tabla -->
       <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
         <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8; display:flex; justify-content:space-between; align-items:center;">
-        <div style="display:flex; align-items:center; gap:16px;">
-          <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de servicios</span>
-          <input type="text" [(ngModel)]="busqueda" placeholder="Buscar servicio..."
-            style="border:0.5px solid #e0d8c8; border-radius:4px; padding:6px 12px; font-size:12px; color:#1C3A2A; outline:none; background:#faf7f2; width:200px;"/>
-        </div>         
-         <div style="display:flex; gap:8px;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Listado de servicios</span>
+            <input type="text" [(ngModel)]="busqueda" placeholder="Buscar servicio..."
+              style="border:0.5px solid #e0d8c8; border-radius:4px; padding:6px 12px; font-size:12px; color:#1C3A2A; outline:none; background:#faf7f2; width:200px;"/>
+          </div>
+          <div style="display:flex; gap:8px;">
             <button (click)="filtroEstado=''" [style.background]="filtroEstado==='' ? '#1C3A2A' : '#faf7f2'" [style.color]="filtroEstado==='' ? '#F5F0E8' : '#8a7a5a'" style="border:0.5px solid #e0d8c8; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer; letter-spacing:1px;">
               Todos
             </button>
@@ -167,6 +165,7 @@
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Cliente</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Trabajador</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Fecha</th>
+              <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Precio</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Estado</th>
               <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Acciones</th>
             </tr>
@@ -179,6 +178,9 @@
                 {{ servicio.trabajador ? servicio.trabajador.nombre + ' ' + servicio.trabajador.apellidos : 'Sin asignar' }}
               </td>
               <td style="padding:12px 18px; color:#2C2C2C;">{{ formatearFecha(servicio.fecha) }}</td>
+              <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">
+                {{ servicio.precio ? servicio.precio.toFixed(2) + ' €' : 'Sin precio' }}
+              </td>
               <td style="padding:12px 18px;">
                 <select (change)="cambiarEstado(servicio, $any($event.target).value)"
                   [value]="servicio.estado"
@@ -203,7 +205,7 @@
               </td>
             </tr>
             <tr *ngIf="serviciosFiltrados.length === 0">
-              <td colspan="6" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay servicios registrados</td>
+              <td colspan="7" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No hay servicios registrados</td>
             </tr>
           </tbody>
         </table>
