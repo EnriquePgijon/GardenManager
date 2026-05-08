@@ -46,9 +46,14 @@
     <div style="flex:1; padding:28px 32px; display:flex; flex-direction:column; gap:16px; overflow:auto;">
 
       <!-- Cabecera -->
-      <div>
-        <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de administración</div>
-        <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Resumen general</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+        <div>
+          <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de administración</div>
+          <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Resumen general</div>
+        </div>
+        <button (click)="generarInformeMensual()" style="background:#1C3A2A; color:#F5F0E8; border:none; padding:10px 20px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+          Informe mensual PDF
+        </button>
       </div>
 
       <!-- Fila 1: Tarjetas de estadísticas -->

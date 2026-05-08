@@ -6,6 +6,7 @@ import { ClienteService } from '../../services/cliente';
 import { ServicioService } from '../../services/servicio';
 import { TrabajadorService } from '../../services/trabajador';
 import { Servicio } from '../../models/servicio.model';
+import { FacturaService } from '../../services/factura';
 
 // Componente que muestra el panel principal de la aplicación
 @Component({
@@ -34,7 +35,8 @@ export class DashboardComponent implements OnInit {
     private servicioService: ServicioService,
     private trabajadorService: TrabajadorService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private facturaService: FacturaService,
   ) {}
 
   // Al cargar el componente, obtiene los datos del backend
@@ -63,5 +65,11 @@ export class DashboardComponent implements OnInit {
   cerrarSesion() {
     this.authService.cerrarSesion();
     this.router.navigate(['/login']);
+  }
+    // Genera y descarga el informe mensual de servicios
+  generarInformeMensual(): void {
+    this.servicioService.obtenerTodos().subscribe(servicios => {
+      this.facturaService.generarInformeMensual(servicios);
+    });
   }
 }

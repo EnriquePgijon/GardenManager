@@ -305,4 +305,198 @@ export class FacturaService {
 
     doc.save('Clientes_GardenManager_' + fecha.replace(/\//g, '-') + '.pdf');
   }
+    // Genera y descarga el informe mensual de servicios en PDF
+  generarInformeMensual(servicios: Servicio[]): void {
+    const doc = new jsPDF();
+    const fecha = new Date();
+    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const mesActual = meses[fecha.getMonth()];
+    const anioActual = fecha.getFullYear();
+    const fechaGeneracion = fecha.toLocaleDateString('es-ES');
+
+    // Colores
+    const verdeOscuro: [number, number, number] = [28, 58, 42];
+    const dorado: [number, number, number] = [200, 169, 110];
+    const crema: [number, number, number] = [245, 240, 232];
+    const grisTexto: [number, number, number] = [100, 100, 100];
+    const negro: [number, number, number] = [44, 44, 44];
+    const verdeClaro: [number, number, number] = [74, 140, 92];
+    const verdeMedio: [number, number, number] = [45, 90, 61];
+
+    const serviciosMes = servicios.filter(s => {
+    if (!s.fecha) return false;
+    let mesServicio: number;
+    let anioServicio: number;
+    
+    if (s.fecha.includes('-')) {
+      // Formato yyyy-mm-dd
+      const partes = s.fecha.split('-');
+      mesServicio = parseInt(partes[1]);
+      anioServicio = parseInt(partes[0]);
+    } else if (s.fecha.includes('/')) {
+      // Formato dd/mm/yyyy
+      const partes = s.fecha.split('/');
+      mesServicio = parseInt(partes[1]);
+      anioServicio = parseInt(partes[2]);
+    } else {
+      return false;
+    }
+    
+    const mesActualNum = fecha.getMonth() + 1;
+    return mesServicio === mesActualNum && anioServicio === anioActual;
+  });
+
+    const pendientes = serviciosMes.filter(s => s.estado === 'PENDIENTE');
+    const enProceso = serviciosMes.filter(s => s.estado === 'EN_PROCESO');
+    const finalizados = serviciosMes.filter(s => s.estado === 'FINALIZADO');
+    const totalFacturado = serviciosMes.reduce((acc, s) => acc + (s.precio || 0), 0);
+
+    // Cabecera
+    doc.setFillColor(...verdeOscuro);
+    doc.rect(0, 0, 210, 50, 'F');
+    doc.setFillColor(...dorado);
+    doc.rect(0, 50, 210, 2, 'F');
+
+    // Logo
+    doc.setFillColor(...dorado);
+    doc.circle(28, 26, 12, 'F');
+    doc.setTextColor(...verdeOscuro);
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('G', 24, 31);
+
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...crema);
+    doc.text('Garden', 46, 24);
+    doc.setTextColor(...dorado);
+    const gw = doc.getTextWidth('Garden');
+    doc.text('Manager', 46 + gw + 2, 24);
+
+    // Info informe
+    doc.setTextColor(...dorado);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.text('INFORME MENSUAL', 190, 14, { align: 'right' });
+    doc.setTextColor(...crema);
+    doc.setFontSize(14);
+    doc.text('Resumen de servicios', 190, 24, { align: 'right' });
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(106, 171, 138);
+    doc.text(mesActual + ' ' + anioActual + ' — Generado el ' + fechaGeneracion, 190, 34, { align: 'right' });
+
+    // Tarjetas resumen
+    doc.setFillColor(...crema);
+    doc.rect(0, 52, 210, 30, 'F');
+
+    const cards = [
+      { label: 'Total', value: serviciosMes.length.toString(), color: verdeOscuro, x: 15 },
+      { label: 'Pendientes', value: pendientes.length.toString(), color: dorado, x: 65 },
+      { label: 'En proceso', value: enProceso.length.toString(), color: verdeClaro, x: 115 },
+      { label: 'Finalizados', value: finalizados.length.toString(), color: verdeMedio, x: 165 }
+    ];
+
+    cards.forEach(card => {
+      doc.setFillColor(255, 255, 255);
+      doc.rect(card.x, 55, 42, 22, 'F');
+      doc.setFillColor(...card.color);
+      doc.rect(card.x, 55, 3, 22, 'F');
+      doc.setTextColor(...grisTexto);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.text(card.label, card.x + 6, 62);
+      doc.setTextColor(...card.color);
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'bold');
+      doc.text(card.value, card.x + 6, 72);
+    });
+
+    // Función helper para dibujar sección
+    const dibujarSeccion = (titulo: string, lista: Servicio[], colorHeader: [number,number,number], colorTexto: [number,number,number], startY: number): number => {
+      if (lista.length === 0) return startY;
+
+      // Cabecera sección
+      doc.setFillColor(colorHeader[0] + 30, colorHeader[1] + 30, colorHeader[2] + 20);
+      doc.rect(15, startY, 180, 10, 'F');
+      doc.setTextColor(...colorTexto);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.text(titulo.toUpperCase(), 20, startY + 7);
+      doc.text(lista.length + ' servicios', 190, startY + 7, { align: 'right' });
+
+      // Cabecera tabla
+      doc.setFillColor(250, 247, 242);
+      doc.rect(15, startY + 10, 180, 8, 'F');
+      doc.setTextColor(...grisTexto);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text('CLIENTE', 20, startY + 16);
+      doc.text('TIPO', 75, startY + 16);
+      doc.text('FECHA', 110, startY + 16);
+      doc.text('TRABAJADOR', 140, startY + 16);
+      doc.text('PRECIO', 185, startY + 16, { align: 'right' });
+
+      let y = startY + 18;
+      lista.forEach((s, i) => {
+        if (y > 260) {
+          doc.addPage();
+          y = 20;
+        }
+        if (i % 2 === 0) {
+          doc.setFillColor(250, 247, 242);
+          doc.rect(15, y, 180, 10, 'F');
+        }
+        doc.setTextColor(...negro);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        const nombreCliente = s.cliente ? s.cliente.nombre + ' ' + s.cliente.apellidos : 'Sin cliente';
+        doc.text(nombreCliente.substring(0, 20), 20, y + 7);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...grisTexto);
+        doc.text(s.tipo || '', 75, y + 7);
+        doc.text(s.fecha || '', 110, y + 7);
+        const trabajador = s.trabajador ? s.trabajador.nombre + ' ' + s.trabajador.apellidos : 'Sin asignar';
+        doc.text(trabajador.substring(0, 15), 140, y + 7);
+        doc.setTextColor(...negro);
+        doc.text((s.precio || 0).toFixed(2) + ' €', 185, y + 7, { align: 'right' });
+        doc.setDrawColor(224, 216, 200);
+        doc.setLineWidth(0.3);
+        doc.line(15, y + 10, 195, y + 10);
+        y += 10;
+      });
+
+      return y + 6;
+    };
+
+    let currentY = 90;
+    currentY = dibujarSeccion('Servicios pendientes', pendientes, [255, 248, 232], [138, 106, 42], currentY);
+    currentY = dibujarSeccion('Servicios en proceso', enProceso, [234, 243, 222], [45, 90, 61], currentY);
+    currentY = dibujarSeccion('Servicios finalizados', finalizados, [232, 240, 232], [28, 58, 42], currentY);
+
+    // Total facturado
+    doc.setFillColor(...verdeOscuro);
+    doc.rect(120, currentY + 4, 75, 12, 'F');
+    doc.setTextColor(106, 171, 138);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Total facturado del mes:', 125, currentY + 12);
+    doc.setTextColor(...dorado);
+    doc.setFont('helvetica', 'bold');
+    doc.text(totalFacturado.toFixed(2) + ' €', 190, currentY + 12, { align: 'right' });
+
+    // Pie de página
+    doc.setFillColor(...verdeOscuro);
+    doc.rect(0, 272, 210, 28, 'F');
+    doc.setFillColor(...dorado);
+    doc.rect(0, 272, 210, 1.5, 'F');
+    doc.setTextColor(106, 171, 138);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('GardenManager — Servicios profesionales de jardinería', 105, 281, { align: 'center' });
+    doc.setTextColor(...dorado);
+    doc.text('Informe generado automáticamente', 105, 289, { align: 'center' });
+
+    doc.save('Informe_' + mesActual + '_' + anioActual + '.pdf');
+  }
 }
