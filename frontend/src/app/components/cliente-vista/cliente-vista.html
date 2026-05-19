@@ -19,16 +19,51 @@
     </div>
   </nav>
 
-  <!-- Contenido principal -->
-  <div style="flex:1; padding:28px 32px;">
+  <!-- Selector de cliente -->
+  <div *ngIf="!vistaActiva" style="flex:1; display:flex; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; border:0.5px solid #e0d8c8; padding:40px; width:400px;">
+      <div style="width:30px; height:2px; background:#C8A96E; margin-bottom:16px;"></div>
+      <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Acceso</div>
+      <div style="font-size:20px; color:#1C3A2A; font-weight:400; margin-bottom:28px;">¿Quién eres?</div>
 
-    <!-- Cabecera -->
-    <div style="margin-bottom:28px;">
-      <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de cliente</div>
-      <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Mis servicios</div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Selecciona tu nombre</label>
+        <select [(ngModel)]="clienteSeleccionado"
+          style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;">
+          <option [ngValue]="null">Selecciona un cliente</option>
+          <option *ngFor="let c of clientes" [ngValue]="c">{{ c.nombre }} {{ c.apellidos }}</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:28px;">
+        <label style="display:block; font-size:10px; color:#4A8C5C; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Pin de acceso</label>
+        <input type="password" [(ngModel)]="pinIntroducido" placeholder="Introduce tu pin"
+          style="width:100%; border:none; border-bottom:1.5px solid #C8A96E; padding:8px 0; font-size:14px; color:#1C3A2A; outline:none; background:transparent;"/>
+      </div>
+
+      <div *ngIf="errorPin" style="background:#fce8e6; border:0.5px solid #c0392b; color:#c0392b; padding:10px 14px; border-radius:6px; font-size:12px; margin-bottom:16px;">
+        ✗ Pin incorrecto o cliente no seleccionado
+      </div>
+
+      <button (click)="entrar()" style="width:100%; background:#1C3A2A; color:#F5F0E8; border:none; padding:12px; border-radius:4px; font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer;">
+        Entrar
+      </button>
+    </div>
+  </div>
+
+  <!-- Vista de servicios -->
+  <div *ngIf="vistaActiva" style="flex:1; padding:28px 32px;">
+
+    <div style="margin-bottom:28px; display:flex; justify-content:space-between; align-items:flex-end;">
+      <div>
+        <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de cliente</div>
+        <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Mis servicios — {{ clienteSeleccionado?.nombre }} {{ clienteSeleccionado?.apellidos }}</div>
+      </div>
+      <button (click)="vistaActiva = false" style="background:transparent; color:#1C3A2A; border:0.5px solid #1C3A2A; padding:8px 16px; border-radius:4px; font-size:12px; cursor:pointer;">
+        Cambiar cliente
+      </button>
     </div>
 
-    <!-- Tabla de servicios -->
     <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
       <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
         <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Historial de servicios</span>
@@ -71,6 +106,5 @@
         </tbody>
       </table>
     </div>
-
   </div>
 </div>

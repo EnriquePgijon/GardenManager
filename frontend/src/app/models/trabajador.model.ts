@@ -7,5 +7,6 @@ export interface Trabajador {
     apellidos: string;
     telefono: string;
     email: string;
+    pin?: string;
     servicios?: Servicio[];
 }

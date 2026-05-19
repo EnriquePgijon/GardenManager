@@ -1,44 +1,71 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { ServicioService } from '../../services/servicio';
+import { ClienteService } from '../../services/cliente';
 import { FacturaService } from '../../services/factura';
 import { Servicio } from '../../models/servicio.model';
+import { Cliente } from '../../models/cliente.model';
 
 // Componente que muestra la vista del cliente
 @Component({
   selector: 'app-cliente-vista',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './cliente-vista.html',
   styleUrl: './cliente-vista.css'
 })
 export class ClienteVistaComponent implements OnInit {
 
-  // Servicios del cliente
+  // Lista de clientes para el selector
+  clientes: Cliente[] = [];
+  // Cliente seleccionado
+  clienteSeleccionado: Cliente | null = null;
+  // Servicios del cliente seleccionado
   servicios: Servicio[] = [];
+  // Pin introducido
+  pinIntroducido = '';
+  // Error de pin
+  errorPin = false;
+  // Vista activa
+  vistaActiva = false;
 
   constructor(
     private authService: AuthService,
     private servicioService: ServicioService,
+    private clienteService: ClienteService,
     private facturaService: FacturaService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
-  // Al cargar el componente obtiene los servicios del cliente
   ngOnInit() {
-    this.cargarServicios();
+    this.clienteService.obtenerTodos().subscribe(clientes => {
+      this.clientes = clientes;
+      this.cdr.detectChanges();
+    });
   }
 
-  // Carga los servicios del cliente actual
-  cargarServicios() {
+  // Verifica el pin y carga los servicios del cliente
+  entrar() {
+    if (!this.clienteSeleccionado || !this.pinIntroducido) {
+      this.errorPin = true;
+      return;
+    }
+
+    if (this.clienteSeleccionado.pin !== this.pinIntroducido) {
+      this.errorPin = true;
+      return;
+    }
+
+    this.errorPin = false;
     this.servicioService.obtenerTodos().subscribe(servicios => {
-      const username = this.authService.obtenerUsername();
       this.servicios = servicios.filter(s =>
-        s.cliente && s.cliente.email === username
+        s.cliente && s.cliente.id === this.clienteSeleccionado!.id
       );
+      this.vistaActiva = true;
       this.cdr.detectChanges();
     });
   }
