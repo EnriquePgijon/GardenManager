@@ -1,0 +1,77 @@
+<!-- Vista del trabajador -->
+<div class="min-h-screen flex flex-col" style="background:#F5F0E8;">
+
+  <!-- Navbar -->
+  <nav style="background:#1C3A2A; height:58px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0;">
+    <div style="display:flex; align-items:center;">
+      <svg width="160" height="40" viewBox="0 0 220 60">
+        <path d="M20 45 C20 20, 45 10, 45 10 C45 10, 50 35, 30 45 Z" fill="#C8A96E"/>
+        <path d="M45 10 L32 42" stroke="#F5F0E8" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        <text x="58" y="28" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#F5F0E8" letter-spacing="1">Garden</text>
+        <text x="58" y="46" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#C8A96E" letter-spacing="1">Manager</text>
+      </svg>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:#8aab8a; font-size:12px;">Panel de trabajador</span>
+      <button (click)="cerrarSesion()" style="border:1px solid #C8A96E; color:#C8A96E; font-size:11px; padding:6px 14px; border-radius:4px; cursor:pointer; background:transparent; margin-left:8px; letter-spacing:1px;">
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div style="flex:1; padding:28px 32px;">
+
+    <!-- Cabecera -->
+    <div style="margin-bottom:28px;">
+      <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de trabajador</div>
+      <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Mis servicios asignados</div>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div *ngIf="mensajeExito" style="background:#EAF3DE; border:0.5px solid #4A8C5C; color:#2D5A3D; padding:12px 18px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+      ✓ {{ mensajeExito }}
+    </div>
+
+    <!-- Tabla de servicios -->
+    <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+      <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+        <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Servicios asignados</span>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#faf7f2;">
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Tipo</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Cliente</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Descripción</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Fecha</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let servicio of servicios" style="border-top:0.5px solid #f0ebe0;">
+            <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ servicio.tipo }}</td>
+            <td style="padding:12px 18px; color:#2C2C2C;">{{ servicio.cliente.nombre }} {{ servicio.cliente.apellidos }}</td>
+            <td style="padding:12px 18px; color:#2C2C2C;">{{ servicio.descripcion || 'Sin descripción' }}</td>
+            <td style="padding:12px 18px; color:#2C2C2C;">{{ formatearFecha(servicio.fecha) }}</td>
+            <td style="padding:12px 18px;">
+              <select (change)="cambiarEstado(servicio, $any($event.target).value)"
+                [value]="servicio.estado"
+                style="border:0.5px solid #e0d8c8; border-radius:4px; padding:5px 10px; font-size:11px; outline:none; cursor:pointer;"
+                [style.background]="servicio.estado === 'PENDIENTE' ? '#FFF8E8' : servicio.estado === 'EN_PROCESO' ? '#EAF3DE' : '#e8f0e8'"
+                [style.color]="servicio.estado === 'PENDIENTE' ? '#C8A96E' : servicio.estado === 'EN_PROCESO' ? '#2D5A3D' : '#1C3A2A'">
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="EN_PROCESO">En proceso</option>
+                <option value="FINALIZADO">Finalizado</option>
+              </select>
+            </td>
+          </tr>
+          <tr *ngIf="servicios.length === 0">
+            <td colspan="5" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No tienes servicios asignados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>

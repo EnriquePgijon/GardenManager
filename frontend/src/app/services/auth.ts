@@ -23,9 +23,13 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/registro`, { username, password, rol });
   }
 
-  // Guarda el token en el navegador
-  guardarToken(token: string): void {
+    guardarToken(token: string): void {
     localStorage.setItem('token', token);
+  }
+
+  // Guarda el nombre de usuario en el navegador
+  guardarUsername(username: string): void {
+    localStorage.setItem('username', username);
   }
 
   // Obtiene el token guardado
@@ -38,8 +42,38 @@ export class AuthService {
     return this.obtenerToken() !== null;
   }
 
-  // Cierra sesión eliminando el token
+    // Cierra sesión eliminando el token y el rol
   cerrarSesion(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('rol');
+  }
+    // Guarda el rol del usuario en el navegador
+  guardarRol(rol: string): void {
+    localStorage.setItem('rol', rol);
+  }
+
+  // Obtiene el rol del usuario guardado
+  obtenerRol(): string | null {
+    return localStorage.getItem('rol');
+  }
+
+  // Comprueba si el usuario es administrador
+  esAdmin(): boolean {
+    return this.obtenerRol() === 'ADMIN';
+  }
+
+  // Comprueba si el usuario es trabajador
+  esTrabajador(): boolean {
+    return this.obtenerRol() === 'TRABAJADOR';
+  }
+
+  // Comprueba si el usuario es cliente
+  esCliente(): boolean {
+    return this.obtenerRol() === 'CLIENTE';
+  }
+
+    // Obtiene el nombre de usuario guardado
+  obtenerUsername(): string | null {
+    return localStorage.getItem('username');
   }
 }

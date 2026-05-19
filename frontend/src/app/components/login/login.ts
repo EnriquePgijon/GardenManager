@@ -25,9 +25,19 @@ export class LoginComponent {
   login() {
     this.authService.login(this.username, this.password).subscribe({
       next: (respuesta) => {
-        // Guarda el token y redirige al panel principal
+        // Guarda el token y el rol
         this.authService.guardarToken(respuesta.token);
-        this.router.navigate(['/dashboard']);
+        this.authService.guardarRol(respuesta.rol);
+        this.authService.guardarUsername(this.username);
+
+        // Redirige según el rol del usuario
+        if (respuesta.rol === 'ADMIN') {
+          this.router.navigate(['/dashboard']);
+        } else if (respuesta.rol === 'TRABAJADOR') {
+          this.router.navigate(['/trabajador']);
+        } else if (respuesta.rol === 'CLIENTE') {
+          this.router.navigate(['/cliente']);
+        }
       },
       error: () => {
         this.error = 'Usuario o contraseña incorrectos';

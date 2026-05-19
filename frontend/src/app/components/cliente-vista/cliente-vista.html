@@ -1,0 +1,76 @@
+<!-- Vista del cliente -->
+<div class="min-h-screen flex flex-col" style="background:#F5F0E8;">
+
+  <!-- Navbar -->
+  <nav style="background:#1C3A2A; height:58px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0;">
+    <div style="display:flex; align-items:center;">
+      <svg width="160" height="40" viewBox="0 0 220 60">
+        <path d="M20 45 C20 20, 45 10, 45 10 C45 10, 50 35, 30 45 Z" fill="#C8A96E"/>
+        <path d="M45 10 L32 42" stroke="#F5F0E8" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        <text x="58" y="28" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#F5F0E8" letter-spacing="1">Garden</text>
+        <text x="58" y="46" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#C8A96E" letter-spacing="1">Manager</text>
+      </svg>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="color:#8aab8a; font-size:12px;">Panel de cliente</span>
+      <button (click)="cerrarSesion()" style="border:1px solid #C8A96E; color:#C8A96E; font-size:11px; padding:6px 14px; border-radius:4px; cursor:pointer; background:transparent; margin-left:8px; letter-spacing:1px;">
+        Cerrar sesión
+      </button>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div style="flex:1; padding:28px 32px;">
+
+    <!-- Cabecera -->
+    <div style="margin-bottom:28px;">
+      <div style="font-size:10px; color:#C8A96E; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Panel de cliente</div>
+      <div style="font-size:22px; color:#1C3A2A; font-weight:400;">Mis servicios</div>
+    </div>
+
+    <!-- Tabla de servicios -->
+    <div style="background:#fff; border-radius:8px; border:0.5px solid #e0d8c8; overflow:hidden;">
+      <div style="padding:14px 18px; border-bottom:0.5px solid #e0d8c8;">
+        <span style="font-size:12px; color:#1C3A2A; font-weight:500;">Historial de servicios</span>
+      </div>
+      <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#faf7f2;">
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Tipo</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Descripción</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Fecha</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Estado</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Precio</th>
+            <th style="padding:10px 18px; text-align:left; font-size:9px; color:#8a7a5a; text-transform:uppercase; letter-spacing:1px;">Factura</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let servicio of servicios" style="border-top:0.5px solid #f0ebe0;">
+            <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">{{ servicio.tipo }}</td>
+            <td style="padding:12px 18px; color:#2C2C2C;">{{ servicio.descripcion || 'Sin descripción' }}</td>
+            <td style="padding:12px 18px; color:#2C2C2C;">{{ formatearFecha(servicio.fecha) }}</td>
+            <td style="padding:12px 18px;">
+              <span *ngIf="servicio.estado === 'PENDIENTE'" style="background:#FFF8E8; color:#C8A96E; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500;">Pendiente</span>
+              <span *ngIf="servicio.estado === 'EN_PROCESO'" style="background:#EAF3DE; color:#2D5A3D; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500;">En proceso</span>
+              <span *ngIf="servicio.estado === 'FINALIZADO'" style="background:#e8f0e8; color:#1C3A2A; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:500;">Finalizado</span>
+            </td>
+            <td style="padding:12px 18px; color:#1C3A2A; font-weight:500;">
+              {{ servicio.precio ? servicio.precio.toFixed(2) + ' €' : 'Sin precio' }}
+            </td>
+            <td style="padding:12px 18px;">
+              <button *ngIf="servicio.estado === 'FINALIZADO'" (click)="generarFactura(servicio)"
+                style="background:#FFF8E8; color:#8a6a2a; border:none; padding:5px 12px; border-radius:4px; font-size:11px; cursor:pointer;">
+                Descargar PDF
+              </button>
+              <span *ngIf="servicio.estado !== 'FINALIZADO'" style="color:#aaa; font-size:11px;">No disponible</span>
+            </td>
+          </tr>
+          <tr *ngIf="servicios.length === 0">
+            <td colspan="6" style="padding:24px 18px; text-align:center; color:#aaa; font-size:12px;">No tienes servicios registrados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
