@@ -31,11 +31,12 @@ export class TrabajadoresComponent implements OnInit {
 
   // Término de búsqueda para filtrar trabajadores
   busqueda = '';
-  // Mensaje de confirmación visual
+
+  // Mensajes de confirmación visual
   mensajeExito = '';
   mensajeError = '';
 
- constructor(
+  constructor(
     private trabajadorService: TrabajadorService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
@@ -74,42 +75,54 @@ export class TrabajadoresComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
-// Guarda el trabajador (crea o actualiza según el caso)
+  // Guarda el trabajador (crea o actualiza según el caso)
   guardarTrabajador() {
-  if (!this.trabajadorSeleccionado.nombre || !this.trabajadorSeleccionado.apellidos ||
-      !this.trabajadorSeleccionado.telefono || !this.trabajadorSeleccionado.email) {
-    this.mensajeError = 'Por favor, rellena todos los campos obligatorios.';
-    setTimeout(() => this.mensajeError = '', 3000);
-    return;
-  }
+    if (!this.trabajadorSeleccionado.nombre || !this.trabajadorSeleccionado.apellidos ||
+        !this.trabajadorSeleccionado.telefono || !this.trabajadorSeleccionado.email) {
+      this.mensajeError = 'Por favor, rellena todos los campos obligatorios.';
+      setTimeout(() => this.mensajeError = '', 3000);
+      return;
+    }
 
-  if (this.editando && this.trabajadorSeleccionado.id) {
-    this.trabajadorService.actualizar(this.trabajadorSeleccionado.id, this.trabajadorSeleccionado).subscribe(() => {
-      this.cargarTrabajadores();
-      this.mostrarFormulario = false;
-      this.mensajeExito = 'Trabajador actualizado correctamente.';
-      setTimeout(() => this.mensajeExito = '', 3000);
-    });
-  } else {
-    this.trabajadorService.crear(this.trabajadorSeleccionado).subscribe(() => {
-      this.cargarTrabajadores();
-      this.mostrarFormulario = false;
-      this.mensajeExito = 'Trabajador creado correctamente.';
-      setTimeout(() => this.mensajeExito = '', 3000);
-    });
+    if (this.editando && this.trabajadorSeleccionado.id) {
+      this.trabajadorService.actualizar(this.trabajadorSeleccionado.id, this.trabajadorSeleccionado).subscribe({
+        next: () => {
+          this.cargarTrabajadores();
+          this.mostrarFormulario = false;
+          this.mensajeExito = 'Trabajador actualizado correctamente.';
+          setTimeout(() => this.mensajeExito = '', 3000);
+        },
+        error: () => {
+          this.mensajeError = 'El nombre de usuario ya está en uso. Por favor elige otro.';
+          setTimeout(() => this.mensajeError = '', 4000);
+        }
+      });
+    } else {
+      this.trabajadorService.crear(this.trabajadorSeleccionado).subscribe({
+        next: () => {
+          this.cargarTrabajadores();
+          this.mostrarFormulario = false;
+          this.mensajeExito = 'Trabajador creado correctamente.';
+          setTimeout(() => this.mensajeExito = '', 3000);
+        },
+        error: () => {
+          this.mensajeError = 'El nombre de usuario ya está en uso. Por favor elige otro.';
+          setTimeout(() => this.mensajeError = '', 4000);
+        }
+      });
+    }
   }
-}
 
   // Elimina un trabajador por su id
- eliminarTrabajador(id: number) {
-  if (confirm('¿Estás seguro de que quieres eliminar este trabajador?')) {
-    this.trabajadorService.eliminar(id).subscribe(() => {
-      this.cargarTrabajadores();
-      this.mensajeError = 'Trabajador eliminado correctamente.';
-      setTimeout(() => this.mensajeError = '', 3000);
-    });
+  eliminarTrabajador(id: number) {
+    if (confirm('¿Estás seguro de que quieres eliminar este trabajador?')) {
+      this.trabajadorService.eliminar(id).subscribe(() => {
+        this.cargarTrabajadores();
+        this.mensajeError = 'Trabajador eliminado correctamente.';
+        setTimeout(() => this.mensajeError = '', 3000);
+      });
+    }
   }
-}
 
   // Cierra el formulario sin guardar
   cancelar() {
@@ -121,6 +134,7 @@ export class TrabajadoresComponent implements OnInit {
     this.authService.cerrarSesion();
     this.router.navigate(['/login']);
   }
+
   // Filtra los trabajadores según el término de búsqueda
   get trabajadoresFiltrados(): Trabajador[] {
     if (!this.busqueda) return this.trabajadores;

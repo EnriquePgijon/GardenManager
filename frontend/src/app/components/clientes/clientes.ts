@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth';
 import { ServicioService } from '../../services/servicio';
 import { Servicio } from '../../models/servicio.model';
 import { FacturaService } from '../../services/factura';
+
 // Componente que gestiona la pantalla de clientes
 @Component({
   selector: 'app-clientes',
@@ -24,6 +25,7 @@ export class ClientesComponent implements OnInit {
 
   // Término de búsqueda para filtrar clientes
   busqueda = '';
+
   // Cliente seleccionado para editar o crear
   clienteSeleccionado: Cliente = this.clienteVacio();
 
@@ -38,7 +40,8 @@ export class ClientesComponent implements OnInit {
 
   // Servicios del cliente seleccionado
   historialServicios: Servicio[] = [];
-  // Mensaje de confirmación visual
+
+  // Mensajes de confirmación visual
   mensajeExito = '';
   mensajeError = '';
 
@@ -59,7 +62,6 @@ export class ClientesComponent implements OnInit {
   // Obtiene todos los clientes del backend
   cargarClientes() {
     this.clienteService.obtenerTodos().subscribe(clientes => {
-      console.log('Clientes recibidos:', clientes);
       this.clientes = clientes;
       this.cdr.detectChanges();
     });
@@ -84,48 +86,60 @@ export class ClientesComponent implements OnInit {
     this.mostrarFormulario = true;
   }
 
- // Guarda el cliente (crea o actualiza según el caso)
+  // Guarda el cliente (crea o actualiza según el caso)
   guardarCliente() {
-  if (!this.clienteSeleccionado.nombre || !this.clienteSeleccionado.apellidos ||
-      !this.clienteSeleccionado.telefono || !this.clienteSeleccionado.email) {
-    this.mensajeError = 'Por favor, rellena todos los campos obligatorios.';
-    setTimeout(() => this.mensajeError = '', 3000);
-    return;
-  }
+    if (!this.clienteSeleccionado.nombre || !this.clienteSeleccionado.apellidos ||
+        !this.clienteSeleccionado.telefono || !this.clienteSeleccionado.email) {
+      this.mensajeError = 'Por favor, rellena todos los campos obligatorios.';
+      setTimeout(() => this.mensajeError = '', 3000);
+      return;
+    }
 
-  if (this.editando && this.clienteSeleccionado.id) {
-    this.clienteService.actualizar(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(() => {
-      this.cargarClientes();
-      this.mostrarFormulario = false;
-      this.mensajeExito = 'Cliente actualizado correctamente.';
-      setTimeout(() => this.mensajeExito = '', 3000);
-    });
-  } else {
-    this.clienteService.crear(this.clienteSeleccionado).subscribe(() => {
-      this.cargarClientes();
-      this.mostrarFormulario = false;
-      this.mensajeExito = 'Cliente creado correctamente.';
-      setTimeout(() => this.mensajeExito = '', 3000);
-    });
-  }
+    if (this.editando && this.clienteSeleccionado.id) {
+      this.clienteService.actualizar(this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe({
+        next: () => {
+          this.cargarClientes();
+          this.mostrarFormulario = false;
+          this.mensajeExito = 'Cliente actualizado correctamente.';
+          setTimeout(() => this.mensajeExito = '', 3000);
+        },
+        error: () => {
+          this.mensajeError = 'El nombre de usuario ya está en uso. Por favor elige otro.';
+          setTimeout(() => this.mensajeError = '', 4000);
+        }
+      });
+    } else {
+      this.clienteService.crear(this.clienteSeleccionado).subscribe({
+        next: () => {
+          this.cargarClientes();
+          this.mostrarFormulario = false;
+          this.mensajeExito = 'Cliente creado correctamente.';
+          setTimeout(() => this.mensajeExito = '', 3000);
+        },
+        error: () => {
+          this.mensajeError = 'El nombre de usuario ya está en uso. Por favor elige otro.';
+          setTimeout(() => this.mensajeError = '', 4000);
+        }
+      });
+    }
   }
 
   // Elimina un cliente por su id
- eliminarCliente(id: number) {
-  if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
-    this.clienteService.eliminar(id).subscribe(() => {
-      this.cargarClientes();
-      this.mensajeError = 'Cliente eliminado correctamente.';
-      setTimeout(() => this.mensajeError = '', 3000);
-    });
-  }
+  eliminarCliente(id: number) {
+    if (confirm('¿Estás seguro de que quieres eliminar este cliente?')) {
+      this.clienteService.eliminar(id).subscribe(() => {
+        this.cargarClientes();
+        this.mensajeError = 'Cliente eliminado correctamente.';
+        setTimeout(() => this.mensajeError = '', 3000);
+      });
+    }
   }
 
   // Cierra el formulario sin guardar
   cancelar() {
     this.mostrarFormulario = false;
   }
-  
+
   // Cierra la sesión y redirige al login
   cerrarSesion() {
     this.authService.cerrarSesion();
@@ -134,15 +148,16 @@ export class ClientesComponent implements OnInit {
 
   // Filtra los clientes según el término de búsqueda
   get clientesFiltrados(): Cliente[] {
-  if (!this.busqueda) return this.clientes;
-  const termino = this.busqueda.toLowerCase();
-  return this.clientes.filter(c =>
-    c.nombre.toLowerCase().includes(termino) ||
-    c.apellidos.toLowerCase().includes(termino) ||
-    c.email.toLowerCase().includes(termino) ||
-    c.telefono.includes(termino)
-  );
+    if (!this.busqueda) return this.clientes;
+    const termino = this.busqueda.toLowerCase();
+    return this.clientes.filter(c =>
+      c.nombre.toLowerCase().includes(termino) ||
+      c.apellidos.toLowerCase().includes(termino) ||
+      c.email.toLowerCase().includes(termino) ||
+      c.telefono.includes(termino)
+    );
   }
+
   // Muestra el historial de servicios de un cliente
   verHistorial(cliente: any) {
     if (this.clienteHistorial?.id === cliente.id) {
